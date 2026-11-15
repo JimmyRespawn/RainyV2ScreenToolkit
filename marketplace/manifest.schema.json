@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RainyMurphy firmware catalog entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "version",
+    "author",
+    "description",
+    "target",
+    "startAddress",
+    "file",
+    "bytes",
+    "sha256",
+    "license",
+    "sourceUrl",
+    "hardwareTested",
+    "redistributionAllowed",
+    "preview"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "target": {
+      "const": "rainy75v2-ips"
+    },
+    "startAddress": {
+      "const": "0x08004000"
+    },
+    "file": {
+      "type": "string",
+      "pattern": "^(firmware/official|marketplace)/[A-Za-z0-9_./-]+\\.bin$"
+    },
+    "bytes": {
+      "type": "integer",
+      "minimum": 256,
+      "maximum": 507904
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "sourceUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "hardwareTested": {
+      "type": "boolean"
+    },
+    "redistributionAllowed": {
+      "const": true
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "type",
+        "cover"
+      ],
+      "properties": {
+        "width": {
+          "const": 320
+        },
+        "height": {
+          "const": 172
+        },
+        "type": {
+          "enum": [
+            "simulation",
+            "device-capture"
+          ]
+        },
+        "cover": {
+          "type": "string",
+          "pattern": "^(firmware/official|marketplace)/[A-Za-z0-9_./-]+\\.png$"
+        },
+        "animation": {
+          "type": "string",
+          "pattern": "^(firmware/official|marketplace)/[A-Za-z0-9_./-]+\\.gif$"
+        }
+      }
+    }
+  }
+}

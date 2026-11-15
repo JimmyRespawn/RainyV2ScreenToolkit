@@ -1,0 +1,17 @@
+node_modules/
+dist/
+release/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+firmware/local/
+.env
+.env.*
+
+# Private BongoCat firmware; keep local only
+/firmware/bongocat/
+
+# Never commit firmware binaries or BongoCat artifacts, regardless of location.
+*.[bB][iI][nN]
+*[bB][oO][nN][gG][oO][cC][aA][tT]*

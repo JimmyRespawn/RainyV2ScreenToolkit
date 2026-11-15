@@ -1,0 +1,22 @@
+{
+  "name": "rainy-murphy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rainy75 V2 IPS screen firmware and device tools, with separately supplied firmware.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "build:local": "node scripts/build.mjs --include-local",
+    "preview": "node scripts/dev.mjs --dist",
+    "pack:offline": "node scripts/offline.mjs",
+    "pack:offline:local": "node scripts/offline.mjs --include-local",
+    "test": "node --test",
+    "catalog:check": "node scripts/catalog.mjs",
+    "check": "node scripts/check.mjs"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "your-theme",
+  "name": "你的屏幕主题",
+  "version": "1.0.0",
+  "author": "作者名称",
+  "description": "说明动画和交互效果",
+  "target": "rainy75v2-ips",
+  "startAddress": "0x08004000",
+  "file": "marketplace/your-theme/firmware.bin",
+  "bytes": 0,
+  "sha256": "用原始 BIN 的 SHA-256 替换",
+  "license": "填入该固件的许可条件",
+  "sourceUrl": "https://github.com/your-account/your-project",
+  "hardwareTested": false,
+  "redistributionAllowed": true,
+  "preview": {
+    "width": 320,
+    "height": 172,
+    "type": "simulation",
+    "cover": "marketplace/your-theme/cover.png",
+    "animation": "marketplace/your-theme/preview.gif"
+  }
+}

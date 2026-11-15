@@ -1,0 +1,33 @@
+name: 社区固件提交
+description: 提交适用于 Rainy75 V2 IPS 的固件信息
+title: "[Firmware] "
+body:
+  - type: input
+    id: name
+    attributes:
+      label: 固件名称与版本
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 来源、文件 SHA-256 与许可
+      description: 提供源项目链接、适用型号和明确的分发条件。
+    validations:
+      required: true
+  - type: textarea
+    id: tested
+    attributes:
+      label: 实机测试与已知问题
+      description: 未测试请明确说明，不要将模拟检查标记为实机验证。
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: 确认
+      options:
+        - label: 文件针对 Rainy75 V2 IPS 应用区域，不是主控、接收器或整片备份。
+          required: true
+        - label: 我已确认拥有公开分发该文件所需的许可，并将其许可条件写入提交内容。
+          required: true
