@@ -4,7 +4,7 @@ import { createHarness,FakeDevice,syntheticBin,until } from './helpers/harness.m
 test('firmware is absent until explicit selection; invalid files preserve the active image',async()=>{
   const {ctx,get,selectBin}=await createHarness();
   assert.equal(ctx.RainyFirmwareSource.hasFirmware(),false);assert.equal(get('btnStart').disabled,true);
-  await ctx.start();assert.equal(get('tab-about').getAttribute('aria-selected'),'true');
+  await ctx.start();assert.equal(get('tab-flash').getAttribute('aria-selected'),'true');
   const bytes=syntheticBin();get('fw-file').files=[{name:'screen.bin',size:bytes.length,arrayBuffer:async()=>bytes.buffer}];await get('fw-file').onchange();assert.equal(ctx.RainyFirmwareSource.hasFirmware(),false);
   await selectBin(bytes);const descriptor=ctx.FIRMWARE.ips,selected=ctx.RainyFirmwareSource.bytesFor(descriptor);assert.equal(selected.length,4608);assert(selected.slice(bytes.length).every(v=>v===255));
   const bad=syntheticBin();new DataView(bad.buffer).setUint32(4,0x08000101,true);await selectBin(bad,'wrong.bin');assert.equal(ctx.FIRMWARE.ips,descriptor);

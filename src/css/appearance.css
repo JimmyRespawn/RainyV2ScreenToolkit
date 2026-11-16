@@ -4,6 +4,36 @@
 .language-control{margin-left:auto;position:relative;z-index:1}
 .language-control select{font:11px 'Segoe UI',sans-serif;color:#d6e4fa;background:#263b60;border:1px solid #567096;border-radius:8px;padding:5px 7px;cursor:pointer;max-width:125px}
 .language-control select:focus-visible{outline:2px solid #99bdff;outline-offset:3px}
+.flash-target-control{padding:16px 18px;margin-bottom:16px;background:#f3f6fc;border:1px solid #e1e7f2;border-radius:16px}
+.flash-target-control label{font-size:13px;font-weight:600;color:#43516b;margin-right:12px}
+.flash-target-control select{font:inherit;font-size:13px;padding:9px 12px;border:1px solid #cfd9ee;border-radius:9px;background:#fff;color:#354b73;max-width:100%}
+.flash-target-control p{font-size:11px;line-height:1.8;color:#7e8ba3;margin-top:10px}
+html[data-theme=dark] .flash-target-control{background:#202d42;border-color:#35465f}
+html[data-theme=dark] .flash-target-control label{color:#dbe5f5}
+html[data-theme=dark] .flash-target-control p{color:#a8b9d3}
+html[data-theme=dark] .flash-target-control select{background:#2a3b55;color:#dbe5f5;border-color:#415779}
+#panel-flash .fw-source-card{margin:0 0 16px}
+.firmware-source-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border:0;padding:0;margin:0 0 14px;min-width:0}
+.firmware-source-options legend{font-size:12px;color:#76849e;margin-bottom:9px}
+.firmware-source-options label{display:flex;align-items:flex-start;gap:10px;border:1px solid #e0e7f3;border-radius:13px;background:#f8faff;padding:15px;cursor:pointer;min-width:0}
+.firmware-source-options input{margin-top:4px;accent-color:#3563ff;flex-shrink:0}
+.firmware-source-options strong{display:block;font-size:13px;color:#3c4a64;margin-bottom:5px}
+.firmware-source-options small{display:block;font-size:11px;color:#8490a4;line-height:1.6}
+.firmware-source-options label:has(input:checked){border-color:#7296ff;background:#eef3ff;box-shadow:0 0 0 1px #7296ff22}
+.firmware-source-options label:has(input:focus-visible){outline:2px solid #3563ff;outline-offset:3px}
+.firmware-source-options label:has(input:disabled){opacity:.55;cursor:default}
+.firmware-source-options:has(#fw-community-option[hidden]){grid-template-columns:1fr}
+.firmware-community-panel{padding:19px;border:1px solid #e1e7f2;border-radius:16px;margin-bottom:16px;background:#f8faff}
+.firmware-community-panel h3{font-size:16px;color:#43516b}
+.firmware-community-panel p{font-size:12px;line-height:1.8;color:#7e8ba3;margin:9px 0 14px}
+.firmware-community-panel button{background:#3563ff;color:#fff;font-size:12px}
+#fw-custom-panel[hidden],#fw-community-panel[hidden],#fw-community-option[hidden]{display:none!important}
+#fw-status,#fw-lock{margin:10px 0;font-size:12px;line-height:1.7}
+html[data-theme=dark] :is(.firmware-source-options label,.firmware-community-panel){background:#202d42;border-color:#35465f}
+html[data-theme=dark] .firmware-source-options label:has(input:checked){background:#293e60;border-color:#7094e2}
+html[data-theme=dark] :is(.firmware-source-options strong,.firmware-community-panel h3){color:#dbe5f5}
+html[data-theme=dark] :is(.firmware-source-options small,.firmware-source-options legend,.firmware-community-panel p){color:#a8b9d3}
+@media(max-width:440px){.firmware-source-options{grid-template-columns:1fr}}
 html[lang=en] .rainy-hero-footer{flex-wrap:wrap;gap:10px}
 html[lang=en] #tool-tabs button{font-size:12px;overflow-wrap:anywhere}
 html[lang=en] .connection-actions{flex-wrap:wrap}
@@ -34,6 +64,32 @@ html[data-theme=dark] :is(.info-card,.about-card,.rm-slot){box-shadow:0 8px 24px
 html[data-theme=dark] .about-divider{background:#35465f}
 @media(max-width:520px){.appearance-control{gap:4px}.appearance-control>span{display:none}.appearance-control select{padding:5px;max-width:100px}}
 .about-credit{font-size:12px;color:#7e8ba3;margin-top:8px}html[data-theme=dark] .about-credit{color:#a8b9d3}
+
+/* Device footer: quiet metadata and separate disclosure cards. */
+html[data-theme=dark] #panel-info .info-extra{background:transparent!important;border:0!important;margin:18px 0 0;padding:0;color:#99abc4!important;font:11px/1.8 'Segoe UI','Microsoft YaHei',sans-serif;box-shadow:none}
+html[data-theme=dark] .info-extra .info-meta{padding:0 4px 7px;margin:0;gap:8px 16px;color:#91a3bd!important;font-size:11px;align-items:baseline}
+html[data-theme=dark] .info-extra .info-meta #info-runtime{color:#b6c9e7}
+html[data-theme=dark] .info-extra details{margin-top:8px;padding:0;border:1px solid #2c3b50;border-radius:12px;background:#1b283b;overflow:hidden}
+html[data-theme=dark] .info-extra details>summary{display:flex;align-items:center;gap:10px;list-style:none;padding:12px 15px;color:#aabbd2;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,color .15s}
+html[data-theme=dark] .info-extra summary::-webkit-details-marker{display:none}
+html[data-theme=dark] .info-extra summary::marker{content:''}
+html[data-theme=dark] .info-extra details>summary:before{content:'';width:6px;height:6px;flex-shrink:0;border-right:1.5px solid #7e94b4;border-bottom:1.5px solid #7e94b4;transform:rotate(-45deg);transition:transform .15s;margin-right:3px}
+html[data-theme=dark] .info-extra details[open]>summary:before{transform:rotate(45deg)}
+html[data-theme=dark] .info-extra details>summary:hover{background:#223149;color:#d3e0f2}
+html[data-theme=dark] .info-extra details>summary:focus-visible{outline:2px solid #789ee9;outline-offset:-3px;border-radius:11px}
+html[data-theme=dark] .info-extra details>dl{padding:0 16px 4px;margin-top:3px;grid-template-columns:90px minmax(0,1fr)}
+html[data-theme=dark] .info-extra details>p{padding:0 16px 15px;margin:6px 0 0!important;color:#91a3bd;line-height:1.9}
+html[data-theme=dark] .info-extra details>pre{background:#121d2e;border:1px solid #293a52;border-radius:8px;color:#9fb4d4;padding:11px 12px;margin:0 12px 12px!important}
+@media(prefers-reduced-motion:reduce){html[data-theme=dark] .info-extra details>summary,html[data-theme=dark] .info-extra details>summary:before{transition:none}}
+
+#panel-info .info-metrics{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+#panel-info .info-metrics .info-metric{min-width:0;padding:18px 16px;min-height:100px}
+#panel-info .info-metrics .info-light-row{display:block;margin:0}
+.info-light-controls{display:flex;align-items:center;gap:9px;min-height:30px;flex-wrap:wrap}
+#panel-info .info-light-controls #info-light{flex-shrink:0}
+.info-light-controls #info-light-state{margin-left:0;font-size:11px;overflow-wrap:anywhere}
+#panel-info #info-charge{min-height:30px;display:flex;align-items:center;line-height:1.5;overflow-wrap:anywhere}
+@media(max-width:560px){#panel-info .info-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}#panel-info .info-metrics .info-light-row{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:74px}#panel-info .info-light-row .info-metric-label{margin-bottom:0}}
 
 /* Compact header: one identity block and one settings group. */
 .rainy-hero{padding:19px 24px 15px}

@@ -22,7 +22,7 @@ for(const match of [...html.matchAll(/<script defer src="\.\/([^"]+)"><\/script>
 for(const script of scripts)new vm.Script(script);
 html=html.replace('</body>',scripts.map(code=>'<script>\n'+code.replace(/<\/script/gi,'<\\/script')+'\n</script>').join('\n')+'\n</body>');
 if(/<script[^>]+src=|<link rel="stylesheet"/.test(html))throw Error('Offline resources were not fully bundled');
-const instructions=`RainyMurphy 离线版\r\n\r\n1. 完整解压本压缩包。\r\n2. 使用桌面 Chrome / Edge 打开 RainyMurphy.html，无需安装 Node 或启动脚本。\r\n3. 社区主题可直接浏览静态图和动画预览。选用主题时，请选择解压目录中提示的 BIN 文件；网页会核对大小与 SHA-256。\r\n4. 也可在“关于”中选择自己的屏幕 BIN。选择文件不会自动烧录。\r\n5. 连接设备后，确认固件与风险，再点击“开始烧录”。刷写时保持有线连接与供电。\r\n\r\nBIN 保持独立文件，未嵌入 HTML。仅支持 Rainy75 V2 IPS 屏幕原始应用 BIN。\r\n${local?'此包含私有本地测试主题，请勿作为公开开源发行包上传。\r\n':''}`;
+const instructions=`RainyMurphy 离线版\r\n\r\n1. 完整解压本压缩包。\r\n2. 使用桌面 Chrome / Edge 打开 RainyMurphy.html，无需安装 Node 或启动脚本。\r\n3. 社区主题可直接浏览静态图和动画预览。选用主题时，请选择解压目录中提示的 BIN 文件；网页会核对大小与 SHA-256。\r\n4. 在“固件烧录”页选择目标和自己的原始应用 BIN。选择文件不会自动烧录。\r\n5. 连接设备后，确认固件与风险，再点击“开始烧录”。刷写时保持有线连接与供电。\r\n\r\nBIN 保持独立文件，未嵌入 HTML。支持 Rainy75 V2 IPS 屏幕及原布局 2.4G 接收器原始应用 BIN，请在烧录页选择正确目标。\r\n${local?'此包含私有本地测试主题，请勿作为公开开源发行包上传。\r\n':''}`;
 const files=[{name:'RainyMurphy.html',data:html},{name:'使用说明.txt',data:instructions},{name:'LICENSE',data:await fs.readFile(path.join(root,'LICENSE'))}];
 for(const name of catalogs.assets.filter(file=>file.endsWith('.bin')))files.push({name,data:await fs.readFile(path.join(root,name))});
 const release=path.resolve(root,'release'),name='RainyMurphy-offline'+(local?'-local':'');

@@ -6,7 +6,7 @@ A browser toolkit for the **Rainy75 V2 IPS screen**: flash screen firmware, mana
 
 Made by **JimmyRespawn**.
 
-The web app and firmware are separate. **The public source tree contains no bundled, encoded, or hidden firmware BIN.** Choose your own firmware in **About**, or select an entry from the theme catalog. Local files stay in the current page session, are not uploaded, and are cleared when you reload.
+The web app and firmware are separate. **The public source tree contains no bundled, encoded, or hidden firmware BIN.** Choose your own firmware on the **Flash firmware** tab, or select an entry from the theme catalog. Local files stay in the current page session, are not uploaded, and are cleared when you reload.
 
 ## Features
 
@@ -19,7 +19,7 @@ The web app and firmware are separate. **The public source tree contains no bund
 - Light, dark, and system appearance modes.
 - A rough theoretical battery-runtime estimate, paused while RGB is enabled. This is not a measured runtime claim.
 
-**Flashing is limited to IPS screen applications starting at `0x08004000`.** Keyboard controller firmware, receiver firmware, and full Flash backups are not supported. Structural validation does not establish hardware compatibility. Confirm the target hardware and accept the risks before flashing external firmware.
+**Choose the flash target explicitly: IPS screen or 2.4 GHz receiver.** Screen applications start at `0x08004000`; the legacy receiver application uses Flash offset `0x2000`, normal PID `0x3071`, and BOOT PID `0x3070`. Keyboard controller firmware and full Flash backups are not supported. Structural validation does not establish hardware compatibility. Confirm the target hardware and accept the risks before flashing external firmware.
 
 ## For users
 
@@ -27,13 +27,13 @@ Use desktop **Chrome or Edge** with WebHID support.
 
 ### Hosted website
 
-Open the maintainer’s HTTPS website. No Node.js installation, scripts, or local server are required. Browse published themes or choose your own local BIN in **About**. Selecting firmware does not start flashing; review it and click **Start flashing** yourself.
+Open the maintainer’s HTTPS website. No Node.js installation, scripts, or local server are required. Browse published themes or choose your own local BIN on the **Flash firmware** tab. Selecting firmware does not start flashing; review it and click **Start flashing** yourself.
 
 ### Offline ZIP
 
 Fully extract the offline release and open **`RainyMurphy.html`** in Chrome or Edge. No installation or server is needed.
 
-The HTML contains the interface, theme catalog, PNG covers, and GIF previews. Firmware remains in separate BIN files. When you select a theme, the browser asks you to choose its corresponding BIN from the extracted folder; the app then checks its size, SHA-256, and application structure. This file-selection step is required by local-file access restrictions. You can also choose another BIN in **About**.
+The HTML contains the interface, theme catalog, PNG covers, and GIF previews. Firmware remains in separate BIN files. When you select a theme, the browser asks you to choose its corresponding BIN from the extracted folder; the app then checks its size, SHA-256, and application structure. This file-selection step is required by local-file access restrictions. You can also choose another BIN on the **Flash firmware** tab.
 
 The browser may request device access on first connection and again when the device switches to BOOT mode. Keep USB connected and the device powered throughout flashing.
 
@@ -117,3 +117,11 @@ The following guides are currently in Chinese:
 The web app source is licensed under [MIT](LICENSE). Firmware retains its own licensing terms; the source-code license does not grant rights to vendor firmware. The project does not include official driver scripts, vendor fonts, or the official keyboard render. The interface uses a custom keyboard-layout illustration.
 
 This is a community tool and is not affiliated with or endorsed by WOB. Offline simulation does not replace hardware testing. Maintainers should record supported hardware and actual test results.
+
+## Receiver flashing
+
+Choose **2.4 GHz receiver** on the Flash firmware tab, select a raw receiver BIN, review its SHA-256 and target, and accept the receiver-specific risk statement. The file stays local. Screen themes remain screen-only; selections for the two targets are independent.
+
+The receiver transport follows the legacy tool’s boot command, erase, write and verify sequence. The receiver validator checks its RISC-V entry and known RAM vector layout; it does not use the screen’s ARM vector rules. A conservative **56 KiB tool limit** applies; it is not a statement of physical Flash capacity. Different image layouts are rejected. The version is not inferred from a filename and is not fixed to 0x26 or 0x27.
+
+After a receiver flash, the shared device connection is released; reconnect explicitly to read device information. No receiver firmware is bundled. Automated tests and file checks are not hardware validation; this integration has not been flashed on real hardware here.

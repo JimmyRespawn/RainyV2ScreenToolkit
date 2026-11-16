@@ -1,6 +1,6 @@
 {
   "name": "rainy-murphy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Rainy75 V2 IPS screen firmware and device tools, with separately supplied firmware.",
   "type": "module",

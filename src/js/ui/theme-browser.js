@@ -89,11 +89,11 @@
       }));
       const entries=results.flatMap(result=>result.status==='fulfilled'?result.value:[]),errors=results.filter(result=>result.status==='rejected').map(result=>result.reason.message);render(entries);loaded=errors.length===0;
       $('error-details').hidden=errors.length===0;$('error').textContent=errors.join('\n');
-      $('status').textContent=entries.length?'预览保持屏幕 320 × 172 比例；点击“播放预览”查看动画。':errors.length?'主题目录读取失败，请展开下方“查看原因”；也可以在「关于」加载本地 BIN。':'暂未收录主题，可在「关于」加载本地 BIN。';
+      $('status').textContent=entries.length?'预览保持屏幕 320 × 172 比例；点击“播放预览”查看动画。':errors.length?'主题目录读取失败，请展开下方“查看原因”；也可以选择“自定义 BIN”加载本地固件。':'暂未收录主题，可选择“自定义 BIN”加载本地固件。';
     }finally{loadingList=false;updateActions();}
   }
 
-  function open(){if(!dialog.open)dialog.showModal();return load();}
+  function open(){if(!window.RainyConnection.isBusy()&&!window.RainyFirmwareSource.isLoading()){window.RainyFirmwareSource.selectTarget('ips');window.RainyFirmwareSource.selectSource('community');}if(!dialog.open)dialog.showModal();return load();}
   document.getElementById('themes-open').onclick=()=>open();document.getElementById('themes-open-about').onclick=()=>open();
   $('close').onclick=close;$('refresh').onclick=()=>load(true);$('confirm').onchange=updateActions;
   $('apply').onclick=()=>{try{window.RainyFirmwareSource.applyCatalog(token,$('confirm').checked);token=null;close();window.RainyTabs.select('tab-flash');}catch(error){$('status').textContent=error.message;}};

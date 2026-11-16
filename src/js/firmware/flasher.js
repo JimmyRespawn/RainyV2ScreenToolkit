@@ -1,5 +1,5 @@
-// Rainy75 V2 IPS-only flashing transport. Firmware bytes are supplied separately.
-const FIRMWARE={ips:{name:'IPS 彩屏',appPid:0x3075,iapPid:0x3078,startAddr:0x4000,version:'尚未选择固件',bootCmd:[0xbe,0xfc,5,0,0xed]}};
+// Rainy75 V2 IPS and receiver flashing transport. Firmware bytes are supplied separately.
+const FIRMWARE={rcv:{name:'2.4G 接收器',appPid:0x3071,iapPid:0x3070,startAddr:0x2000,version:'尚未选择固件',bootCmd:[0xbe,0xfc,4,0xed]},ips:{name:'IPS 彩屏',appPid:0x3075,iapPid:0x3078,startAddr:0x4000,version:'尚未选择固件',bootCmd:[0xbe,0xfc,5,0,0xed]}};
 const VENDOR_ID = 0x36B0;
 const USAGE_PAGE = 0xFF60;
 const CMD_PROM = 0x80, CMD_ERASE = 0x81, CMD_VERIFY = 0x82, CMD_END = 0x83;
@@ -10,7 +10,7 @@ const RETRY = 10;           // 同一小段连续失败的最大重试次数（�
 const RETRY_DELAY = 20;     // 重试间隔 ms
 const ERASE_WAIT = 1200;    // 擦除应答回来后还要等这么久才能写（设备还在后台收尾）
 
-let target = 'ips'; // Screen application only.
+let target = 'ips'; // Explicit target; never inferred from a filename.
 let dev = null;          // HIDDevice
 let running = false;
 let cancelled = false;
@@ -20,7 +20,7 @@ let outId = 0;           // 探测到的输出报告 ID
 let outLen = 0;          // 探测到的输出报告长度
 
 // ======================= 界面 =======================
-function pick(which){if(running||which!=='ips')return;target='ips';setStatus('待刷入：'+FIRMWARE.ips.version);}
+function pick(which){if(running||!FIRMWARE[which])return;target=which;setStatus('待刷入：'+FIRMWARE[which].version);}
 
 function setStatus(text, cls) {
   const el = document.getElementById('status');
@@ -36,7 +36,7 @@ function showBanner(text, cls) {
 function hideBanner() {
   const el = document.getElementById('banner');
   el.className = 'banner';
-  document.title = 'RainyMurphy v1.0.0';
+  document.title = 'RainyMurphy v1.01';
 }
 
 function setProgress(pct) {
@@ -82,7 +82,7 @@ async function requestDevice(productId, withUsagePage) {
 }
 
 function keyByIapPid(pid) {
-  for (const k of ['ips']) {
+  for (const k of ['ips','rcv']) {
     if (FIRMWARE[k].iapPid === pid) return k;
   }
   return null;
@@ -91,7 +91,9 @@ function keyByIapPid(pid) {
 async function findByPid(productId) {
   if (!navigator.hid) return null;
   const list = await navigator.hid.getDevices();
-  return list.find(d => d.vendorId === VENDOR_ID && d.productId === productId) || null;
+  const matches=list.filter(d=>d.vendorId===VENDOR_ID&&d.productId===productId);
+  if(matches.length>1)return null;
+  return matches[0]||null;
 }
 
 function onReport(e) {
@@ -313,9 +315,10 @@ async function connectApp() {
 
 async function findBootDevice() {
   const seen = await navigator.hid.getDevices().catch(() => []);
-  for (const key of ['ips']) {
+  for (const key of [target]) {
     const fw = FIRMWARE[key];
-    const d = seen.find(x => x.vendorId === VENDOR_ID && x.productId === fw.iapPid);
+    const matches = seen.filter(x => x.vendorId === VENDOR_ID && x.productId === fw.iapPid);
+    const d = matches.length === 1 ? matches[0] : null;
     if (d) return { dev: d, key: key };
   }
   return null;
@@ -352,6 +355,7 @@ async function enterIap() {
 
   // 已授权的 IAP 设备（第二次以后）
   for (let i = 0; i < 5; i++) {
+    if(cancelled)throw new Error('已取消');
     const d = await findByPid(fw.iapPid);
     if (d) {
       if (!d.opened) await d.open();
@@ -371,6 +375,7 @@ async function enterIap() {
   }
   
   for (let i = 0; i < 60; i++) {
+    if(cancelled)throw new Error('已取消');
     const d = await findByPid(fw.iapPid);
     if (d) {
       if (!d.opened) await d.open();
@@ -414,12 +419,12 @@ async function start() {
   if (!target) {
     try {
       const allPids = [];
-      for (const k of ['ips']) {
+      for (const k of ['ips','rcv']) {
         allPids.push(FIRMWARE[k].appPid, FIRMWARE[k].iapPid);
       }
       const d = await requestDevice(allPids, false);
       const key = keyByIapPid(d.productId)
-               || (d.productId === FIRMWARE.ips.appPid ? 'kbd' : null);
+               || Object.keys(FIRMWARE).find(key=>FIRMWARE[key].appPid===d.productId);
       if (!key) {
         try { await d.close(); } catch (e) {}
         alert('这个设备无法识别，请先点上面的卡片选择要烧哪台');
@@ -451,6 +456,7 @@ async function start() {
     const data = window.RainyFirmwareSource.bytesFor(fw);
     log('固件已就绪');
 
+    if(dev&&dev.productId!==fw.appPid&&dev.productId!==fw.iapPid){try{await dev.close();}catch{}dev=null;}
     if (!dev) {
       
       const boot = await findBootDevice();
@@ -502,7 +508,7 @@ async function start() {
   } finally {
     running = false;
     document.getElementById('btnStart').disabled = false;
-      document.getElementById('btnCancel').disabled = true;
+      document.getElementById('btnCancel').disabled = !pendingFlash;
     if (!pendingFlash) {
       try { if (dev) await dev.close(); } catch (e) {}
       dev = null;
@@ -510,8 +516,14 @@ async function start() {
   }
 }
 
-function cancel() {
+async function cancel() {
   cancelled = true;
+  if(!running&&pendingFlash){
+    pendingFlash=null;
+    try{if(dev)await dev.close();}catch{}
+    dev=null;resetRx();document.getElementById('btnCancel').disabled=true;
+    window.RainyConnection?.refreshUi();
+  }
   log('已请求取消…', 'warn');
 }
 

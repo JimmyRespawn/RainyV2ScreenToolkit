@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById('connection-'+id),listeners=new Set();
 const usb=RainyScreen.FILTER,receiver={...usb,productId:0x3071};
-let device=null,operation=false,flashing=false,fault=null,label='',version=0,flashSuccess=false;
+let device=null,operation=false,flashing=false,fault=null,label='',version=0,flashSuccess=false,flashTarget='ips';
 const firmwareLoading=()=>!!window.RainyFirmwareSource?.isLoading();
 const isBusy=()=>operation||flashing||running||!!pendingFlash||firmwareLoading();
 function snapshot(){return {device,mode:device?.productId===0x3071?'wireless':device?'usb':null,busy:isBusy(),fault,label,version};}
@@ -13,7 +13,7 @@ function render(){
  $('change').hidden=!connected;$('change').disabled=busy;$('change').textContent=state.mode==='wireless'?'切换 USB':'更换设备';
  $('disconnect').hidden=!connected;$('disconnect').disabled=busy;
  $('title').textContent=state.busy?(label||(pendingFlash?'等待烧录授权':'正在操作设备…')):fault?'连接需要重试':connected?(state.mode==='usb'?'USB 有线 · 已连接':'2.4G 接收器 · 已连接'):'尚未连接设备';
- $('note').textContent=!navigator.hid?'请使用支持 WebHID 的 Chrome 或 Edge':fault?fault:flashing?'连接正交由屏幕烧录流程管理，请保持有线连接':pendingFlash?'请点击烧录页的“选择设备并继续”完成授权':connected?(state.mode==='usb'?'设备信息、灯光和动画管理共用此连接':'可读取电量、控制灯光；动画管理和烧录需要 USB'):'点击连接即可；已授权的单台设备会直接重连，无需重复选择。';
+ $('note').textContent=!navigator.hid?'请使用支持 WebHID 的 Chrome 或 Edge':fault?fault:flashing?'连接正交由烧录流程管理，请保持设备连接':pendingFlash?'请点击烧录页的“选择设备并继续”完成授权':connected?(state.mode==='usb'?'设备信息、灯光和动画管理共用此连接':'可读取电量、控制灯光；动画管理和烧录需要 USB'):'点击连接即可；已授权的单台设备会直接重连，无需重复选择。';
  const startButton=document.getElementById('btnStart');if(startButton)startButton.disabled=operation||flashing||running||firmwareLoading()||!window.RainyFirmwareSource?.hasFirmware();
 }
 function notify(){render();const state=snapshot();for(const listener of listeners){try{listener(state);}catch(e){console.error(e);}}}
@@ -57,15 +57,17 @@ async function connect({choose=false,usbOnly=false,bootstrap=true,quiet=false}={
  if(bootstrap)await initialize();return true;
 }
 async function disconnect(){if(isBusy()||firmwareLoading())throw Error('设备正在操作，请稍候');operation=true;label='正在断开…';notify();try{await release();fault=null;}finally{operation=false;label='';notify();}}
-async function prepareForFlash(){
+async function prepareForFlash(key='ips'){
+ flashTarget=key;
  if(operation||flashing||running||firmwareLoading())throw Error('设备正在操作，请稍候');
- if(device?.productId===receiver.productId){const connected=await connect({choose:true,usbOnly:true,bootstrap:false});if(!connected)throw Error('已取消 USB 设备选择，尚未开始烧录');}
+ if(key==='ips'&&device?.productId===receiver.productId){const connected=await connect({choose:true,usbOnly:true,bootstrap:false});if(!connected)throw Error('已取消 USB 设备选择，尚未开始烧录');}
  operation=true;label='正在交接烧录连接…';notify();
- try{await release();fault=null;flashing=true;flashSuccess=false;label='正在烧录屏幕固件…';}finally{operation=false;notify();}
+ try{await release();fault=null;flashing=true;flashSuccess=false;label=key==='rcv'?'正在烧录接收器固件…':'正在烧录屏幕固件…';}finally{operation=false;notify();}
 }
 async function finishFlash(){
  flashing=false;label='';notify();
  if(pendingFlash||!flashSuccess)return;
+ if(flashTarget==='rcv'){flashSuccess=false;return;}
  flashSuccess=false;
  for(let attempt=0;attempt<5;attempt++){
    if(attempt)await new Promise(resolve=>setTimeout(resolve,300));
