@@ -2,11 +2,22 @@
 'use strict';
 const panel=document.getElementById('panel-info');
 const $=id=>document.getElementById('info-'+id);let device=null,busy=false,pending=null,transportFault=false,lightConfig=null,lastBattery=null,profileEpoch=0;
-const message=s=>$('status').textContent=s;
+function message(text,error=false){
+ $('status').textContent=text;
+ $('status').setAttribute('data-error',String(error));
+}
 function update(){const sharedBusy=!!window.RainyConnection?.isBusy();panel.setAttribute('data-connected',String(!!device));panel.setAttribute('data-reading',String(busy));$('refresh').disabled=!device||busy||transportFault||sharedBusy;$('light').disabled=!device||busy||sharedBusy||transportFault||!lightConfig;$('light').setAttribute('aria-checked',String(!!(lightConfig?.[0]&1)));$('light-state').textContent=lightConfig?(lightConfig[0]&1?'已开启':'已关闭'):'未读取';}
 
-function clear(){ $('runtime').textContent='等待读取';$('fill').style.opacity='.2';for(const id of ['battery','charge','time'])$(id).textContent='—';}
-const trace=document.createElement('pre');trace.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:180px;overflow:auto;margin-top:12px';const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='通信日志';details.append(summary,trace);$('diagnostics').append(details);
+function clear(){
+ panel.setAttribute('data-battery-read','false');
+ $('battery').textContent='—';
+ $('fill').style.width='0%';
+ $('charge').textContent='未读取';
+ $('charge').setAttribute('data-charge','unknown');
+ $('runtime').textContent='等待读取';
+ $('time').textContent='—';
+}
+const trace=$('trace');
 const hex=a=>Array.from(a,b=>b.toString(16).padStart(2,'0')).join(' ');
 function log(text){trace.textContent=(trace.textContent+'\n'+new Date().toLocaleTimeString()+' '+text).split('\n').slice(-80).join('\n');}
 function receive(e){
@@ -74,9 +85,19 @@ async function toggleLight(){
  finally{if(lastBattery)updateRuntime(lastBattery);}
 }
 async function read(){
+ const current=device;
  clear();lightConfig=null;lastBattery=null;message('正在读取设备信息…');let result,lightError;
- await withSession(async()=>{const frame=await exchange([190,187,4,237]);result={percent:frame[3],charge:frame[4]};try{await readLight();}catch(e){lightError=e;log('LIGHT '+e.message);}});lastBattery=result;
- $('fill').style.opacity='1';$('fill').style.background='linear-gradient(to top,#22c6bf '+result.percent+'%,transparent '+result.percent+'%)';$('battery').textContent=result.percent+'%';$('charge').textContent=({0:'未充电',1:'已充满',2:'正在充电'})[result.charge]??'未知状态（'+result.charge+'）';updateRuntime(result);$('time').textContent=new Date().toLocaleString();message(lightError?'电量已读取，灯光状态读取失败：'+lightError.message:'设备信息已更新');
+ await withSession(async()=>{const frame=await exchange([190,187,4,237]);result={percent:frame[3],charge:frame[4]};try{await readLight();}catch(e){lightError=e;log('LIGHT '+e.message);}});
+ if(device!==current)return;
+ lastBattery=result;
+ panel.setAttribute('data-battery-read','true');
+ $('fill').style.width=result.percent+'%';
+ $('battery').textContent=result.percent+'%';
+ $('charge').textContent=({0:'未充电',1:'已充满',2:'正在充电'})[result.charge]??'未知状态（'+result.charge+'）';
+ $('charge').setAttribute('data-charge',({0:'unplugged',1:'charged',2:'charging'})[result.charge]??'unknown');
+ updateRuntime(result);
+ $('time').textContent=new Date().toLocaleString();
+ message(lightError?'已读取电量。灯光状态未能读出，可唤醒键盘或重新连接后再试。':'设备信息已更新',!!lightError);
 }
 function updateRuntime(result){
  const capacityMah=10000,lowCurrentMa=20,highCurrentMa=50;
@@ -85,16 +106,28 @@ function updateRuntime(result){
  if(!lightConfig)field.textContent='灯光状态未知，暂不估算';
  else if(lightConfig[0]&1)field.textContent='RGB 已开启，暂不估算';
  else if(result.charge===2)field.textContent='充电中，暂不估算';
- else if(result.charge===0||result.charge===1)field.textContent=(device.productId===0x3071?'约 ':'无线参考约 ')+low+'–'+high+' 小时（粗估）';
+ else if(result.charge===0||result.charge===1)field.textContent=(device.productId===0x3071?'约 ':'无线参考：')+low+'–'+high+' 小时';
  else field.textContent='充电状态未知，暂不估算';
 }
-async function task(fn){if(busy)return;busy=true;update();try{await (window.RainyConnection.run('正在读取或更新设备信息…',fn));}catch(e){log('ERROR '+e.message);if(!lastBattery)$('battery').textContent='读取失败';message(e.message);}finally{busy=false;update();}}
+async function task(fn){
+ if(busy)return;
+ const current=device;
+ busy=true;update();
+ try{await window.RainyConnection.run('正在读取或更新设备信息…',fn);}
+ catch(e){
+   log('ERROR '+e.message);
+   if(device===current){
+     if(!lastBattery)$('battery').textContent='读取失败';
+     message('操作未完成。请唤醒键盘，或重新连接后再试。',true);
+   }
+ }finally{busy=false;update();}
+}
 $('refresh').onclick=()=>task(read);$('light').onclick=()=>{if(!device||busy||transportFault||!lightConfig)return;return task(toggleLight);};
 window.RainyBasicInfo={isConnected:()=>!!device,refresh:()=>task(read),hasFault:()=>transportFault};
 window.RainyConnection.subscribe(state=>{
  if(device!==state.device){pending?.reject(Error('连接已切换'));if(device)device.removeEventListener('inputreport',receive);device=state.device;transportFault=false;profileEpoch=0;lightConfig=null;lastBattery=null;clear();
  if(device){device.addEventListener('inputreport',receive);$('mode').textContent=device.productId===0x3071?'2.4G 接收器 · 已连接':'USB 有线 · 已连接';$('name').textContent=device.productName||'Rainy75 V2';$('id').textContent='VID '+device.vendorId.toString(16).toUpperCase()+' / PID '+device.productId.toString(16).toUpperCase();message('已连接，正在准备读取设备信息。');}
- else{$('mode').textContent='未连接设备';$('name').textContent='未连接';$('id').textContent='—';message('点击顶部“连接设备”即可，无需在各页面重复连接。');}
+ else{$('mode').textContent='未连接设备';$('name').textContent='未连接';$('id').textContent='—';message('连接后会自动读取设备状态。');}
  }update();
 });
 update();

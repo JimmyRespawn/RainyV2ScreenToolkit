@@ -4,92 +4,11 @@
 .language-control{margin-left:auto;position:relative;z-index:1}
 .language-control select{font:11px 'Segoe UI',sans-serif;color:#d6e4fa;background:#263b60;border:1px solid #567096;border-radius:8px;padding:5px 7px;cursor:pointer;max-width:125px}
 .language-control select:focus-visible{outline:2px solid #99bdff;outline-offset:3px}
-.flash-target-control{padding:16px 18px;margin-bottom:16px;background:#f3f6fc;border:1px solid #e1e7f2;border-radius:16px}
-.flash-target-control label{font-size:13px;font-weight:600;color:#43516b;margin-right:12px}
-.flash-target-control select{font:inherit;font-size:13px;padding:9px 12px;border:1px solid #cfd9ee;border-radius:9px;background:#fff;color:#354b73;max-width:100%}
-.flash-target-control p{font-size:11px;line-height:1.8;color:#7e8ba3;margin-top:10px}
-html[data-theme=dark] .flash-target-control{background:#202d42;border-color:#35465f}
-html[data-theme=dark] .flash-target-control label{color:#dbe5f5}
-html[data-theme=dark] .flash-target-control p{color:#a8b9d3}
-html[data-theme=dark] .flash-target-control select{background:#2a3b55;color:#dbe5f5;border-color:#415779}
-#panel-flash .fw-source-card{margin:0 0 16px}
-.firmware-source-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border:0;padding:0;margin:0 0 14px;min-width:0}
-.firmware-source-options legend{font-size:12px;color:#76849e;margin-bottom:9px}
-.firmware-source-options label{display:flex;align-items:flex-start;gap:10px;border:1px solid #e0e7f3;border-radius:13px;background:#f8faff;padding:15px;cursor:pointer;min-width:0}
-.firmware-source-options input{margin-top:4px;accent-color:#3563ff;flex-shrink:0}
-.firmware-source-options strong{display:block;font-size:13px;color:#3c4a64;margin-bottom:5px}
-.firmware-source-options small{display:block;font-size:11px;color:#8490a4;line-height:1.6}
-.firmware-source-options label:has(input:checked){border-color:#7296ff;background:#eef3ff;box-shadow:0 0 0 1px #7296ff22}
-.firmware-source-options label:has(input:focus-visible){outline:2px solid #3563ff;outline-offset:3px}
-.firmware-source-options label:has(input:disabled){opacity:.55;cursor:default}
-.firmware-source-options:has(#fw-community-option[hidden]){grid-template-columns:1fr}
-.firmware-community-panel{padding:19px;border:1px solid #e1e7f2;border-radius:16px;margin-bottom:16px;background:#f8faff}
-.firmware-community-panel h3{font-size:16px;color:#43516b}
-.firmware-community-panel p{font-size:12px;line-height:1.8;color:#7e8ba3;margin:9px 0 14px}
-.firmware-community-panel button{background:#3563ff;color:#fff;font-size:12px}
-#fw-custom-panel[hidden],#fw-community-panel[hidden],#fw-community-option[hidden]{display:none!important}
-#fw-status,#fw-lock{margin:10px 0;font-size:12px;line-height:1.7}
-html[data-theme=dark] :is(.firmware-source-options label,.firmware-community-panel){background:#202d42;border-color:#35465f}
-html[data-theme=dark] .firmware-source-options label:has(input:checked){background:#293e60;border-color:#7094e2}
-html[data-theme=dark] :is(.firmware-source-options strong,.firmware-community-panel h3){color:#dbe5f5}
-html[data-theme=dark] :is(.firmware-source-options small,.firmware-source-options legend,.firmware-community-panel p){color:#a8b9d3}
-@media(max-width:440px){.firmware-source-options{grid-template-columns:1fr}}
 html[lang=en] .rainy-hero-footer{flex-wrap:wrap;gap:10px}
 html[lang=en] #tool-tabs button{font-size:12px;overflow-wrap:anywhere}
 html[lang=en] .connection-actions{flex-wrap:wrap}
-html[lang=en] .info-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media(max-width:520px){html[lang=en] .rainy-brand-row{flex-wrap:wrap}.rainy-hero-footer{flex-wrap:wrap;gap:8px}html[lang=en] .info-meta{flex-wrap:wrap;gap:8px}html[lang=en] .flash-source-details{grid-template-columns:110px minmax(0,1fr)}}
-html[data-theme=dark]{color-scheme:dark}
-html[data-theme=dark] body{background:linear-gradient(135deg,#101724,#1a263b);color:#dbe5f5}
-html[data-theme=dark] .container{background:#182233;border-color:#2c3b51;box-shadow:0 18px 50px #0005}
-html[data-theme=dark] :is(#panel-info,#panel-about,#rainy-manager,#panel-flash,#tool-tabs){background:#182233;color:#dbe5f5}
-html[data-theme=dark] :is(.info-card,.about-card,.fw-source-card,.info-metric,.info-light-row,.rainy-connection,.rm-slot,#panel-flash .flash-source-summary,.theme-card,.theme-confirmation,.theme-local-help,#rm-dialog,.theme-browser-header){background:#202d42!important;border-color:#35465f!important;color:#dbe5f5}
-html[data-theme=dark] :is(.info-extra,.rm-notice,.about-note,.info-visual,#flash-source-type,.flash-warning){background:#25344c!important;border-color:#35465f!important;color:#b8c9e4!important}
-html[data-theme=dark] #catalog-dialog{background:#182233;color:#dbe5f5;border-color:#35465f}
-html[data-theme=dark] :is(.connection-title,.info-heading h2,.about-card h2,.fw-source-card h3,.rm-heading h2,.rm-slot h3,#flash-source-name,.flash-source-details dd,.about-list dd,.info-meta,.info-light-label,.info-metric-label,.theme-card h3,.theme-confirmation h3,#rm-dialog h3){color:#e0e9f8!important}
-html[data-theme=dark] :is(.connection-note,.info-online,.info-eyebrow,#info-status,.info-extra,.info-extra dd,#info-charge,#info-light-state,.info-metric-label,.rm-heading p,.rm-kicker,#rm-status,.rm-footnote,.rm-slot ul,.rm-empty,.about-note,.about-list dt,.fw-hint,.fw-confirm,#fw-status,#fw-candidate,#fw-lock,.flash-source-file,.flash-source-details dt,.flash-source-note,.flash-source-fingerprint,.flash-connection-hint,.theme-tag,.theme-meta,.theme-description,.theme-tested,.theme-browser-header p,#catalog-status,.theme-confirmation label,.theme-confirmation code,.flash-log,.pct){color:#a8b9d3!important}
-html[data-theme=dark] :is(#tool-tabs,.info-extra,.about-divider,.catalog-entry,.theme-browser-header){border-color:#35465f!important}
-html[data-theme=dark] #tool-tabs button{background:transparent;color:#a8b9d3}
-html[data-theme=dark] #tool-tabs button[aria-selected=true]{background:#2c4065;color:#bdd2ff}
-html[data-theme=dark] :is(#panel-info button,#rainy-manager button,.fw-source-card button,.theme-browser-header button,.theme-actions button,.theme-actions a,#themes-open,#themes-open-about,.ghost){background:#2a3b55;color:#c4d7f8;border-color:#415779}
-html[data-theme=dark] :is(#connection-connect,#fw-apply,#catalog-apply,.theme-actions .theme-select){background:#4779ee!important;color:#fff!important}
-html[data-theme=dark] #rainy-manager .rm-delete{background:#713643;color:#ffe0e5}
-html[data-theme=dark] #panel-info #info-light{background:#526079}
-html[data-theme=dark] #panel-info #info-light[aria-checked=true]{background:#4779ee}
-html[data-theme=dark] :is(#fw-status[data-error=true],#rm-status[data-error=true],#catalog-error-details){color:#ffb4a8!important}
-html[data-theme=dark] :is(.bar,#catalog-error){background:#101a2b;color:#becde5}
-html[data-theme=dark] :is(.theme-local-help a,.theme-local-help code,.catalog-entry a,.info-power strong){color:#94b6ff}
-html[data-theme=dark] :is(.connection-actions button,#rm-badge,#rm-log){border-color:#35465f;background:#202d42;color:#b8c9e4}
-html[data-theme=dark] :is(.info-card,.about-card,.rm-slot){box-shadow:0 8px 24px #00000012}
-html[data-theme=dark] .about-divider{background:#35465f}
+@media(max-width:520px){html[lang=en] .rainy-brand-row{flex-wrap:wrap}.rainy-hero-footer{flex-wrap:wrap;gap:8px}}
 @media(max-width:520px){.appearance-control{gap:4px}.appearance-control>span{display:none}.appearance-control select{padding:5px;max-width:100px}}
-.about-credit{font-size:12px;color:#7e8ba3;margin-top:8px}html[data-theme=dark] .about-credit{color:#a8b9d3}
-
-/* Device footer: quiet metadata and separate disclosure cards. */
-html[data-theme=dark] #panel-info .info-extra{background:transparent!important;border:0!important;margin:18px 0 0;padding:0;color:#99abc4!important;font:11px/1.8 'Segoe UI','Microsoft YaHei',sans-serif;box-shadow:none}
-html[data-theme=dark] .info-extra .info-meta{padding:0 4px 7px;margin:0;gap:8px 16px;color:#91a3bd!important;font-size:11px;align-items:baseline}
-html[data-theme=dark] .info-extra .info-meta #info-runtime{color:#b6c9e7}
-html[data-theme=dark] .info-extra details{margin-top:8px;padding:0;border:1px solid #2c3b50;border-radius:12px;background:#1b283b;overflow:hidden}
-html[data-theme=dark] .info-extra details>summary{display:flex;align-items:center;gap:10px;list-style:none;padding:12px 15px;color:#aabbd2;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,color .15s}
-html[data-theme=dark] .info-extra summary::-webkit-details-marker{display:none}
-html[data-theme=dark] .info-extra summary::marker{content:''}
-html[data-theme=dark] .info-extra details>summary:before{content:'';width:6px;height:6px;flex-shrink:0;border-right:1.5px solid #7e94b4;border-bottom:1.5px solid #7e94b4;transform:rotate(-45deg);transition:transform .15s;margin-right:3px}
-html[data-theme=dark] .info-extra details[open]>summary:before{transform:rotate(45deg)}
-html[data-theme=dark] .info-extra details>summary:hover{background:#223149;color:#d3e0f2}
-html[data-theme=dark] .info-extra details>summary:focus-visible{outline:2px solid #789ee9;outline-offset:-3px;border-radius:11px}
-html[data-theme=dark] .info-extra details>dl{padding:0 16px 4px;margin-top:3px;grid-template-columns:90px minmax(0,1fr)}
-html[data-theme=dark] .info-extra details>p{padding:0 16px 15px;margin:6px 0 0!important;color:#91a3bd;line-height:1.9}
-html[data-theme=dark] .info-extra details>pre{background:#121d2e;border:1px solid #293a52;border-radius:8px;color:#9fb4d4;padding:11px 12px;margin:0 12px 12px!important}
-@media(prefers-reduced-motion:reduce){html[data-theme=dark] .info-extra details>summary,html[data-theme=dark] .info-extra details>summary:before{transition:none}}
-
-#panel-info .info-metrics{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
-#panel-info .info-metrics .info-metric{min-width:0;padding:18px 16px;min-height:100px}
-#panel-info .info-metrics .info-light-row{display:block;margin:0}
-.info-light-controls{display:flex;align-items:center;gap:9px;min-height:30px;flex-wrap:wrap}
-#panel-info .info-light-controls #info-light{flex-shrink:0}
-.info-light-controls #info-light-state{margin-left:0;font-size:11px;overflow-wrap:anywhere}
-#panel-info #info-charge{min-height:30px;display:flex;align-items:center;line-height:1.5;overflow-wrap:anywhere}
-@media(max-width:560px){#panel-info .info-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}#panel-info .info-metrics .info-light-row{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:74px}#panel-info .info-light-row .info-metric-label{margin-bottom:0}}
 
 /* Compact header: one identity block and one settings group. */
 .rainy-hero{padding:19px 24px 15px}
@@ -109,3 +28,399 @@ html[data-theme=dark] .info-extra details>pre{background:#121d2e;border:1px soli
 .rainy-browser{flex-shrink:0;font-size:10px;opacity:.8}
 @media(max-width:640px){.rainy-brand-row,html[lang=en] .rainy-brand-row{flex-wrap:wrap;gap:12px}.rainy-controls{margin-left:56px}.rainy-hero-footer,html[lang=en] .rainy-hero-footer{margin-top:10px;flex-wrap:wrap;gap:6px}.rainy-hero{padding:17px 20px 14px}.rainy-controls select{min-width:100px}.rainy-hero h1{font-size:25px}}
 @media(max-width:360px){.rainy-controls{margin-left:0}.rainy-eyebrow{letter-spacing:1px}.rainy-title-row{gap:6px}.rainy-title-row .rainy-version{font-size:9px}.rainy-identity{gap:9px}.rainy-hero h1{font-size:23px}}
+
+
+#usb-switch-dialog{margin:auto;width:calc(100% - 40px);max-width:440px;padding:24px;border:1px solid #8994a844;border-radius:16px;background:#fff;color:#37435a}
+#usb-switch-dialog::backdrop{background:#080e1b88}
+#usb-switch-dialog p{font-size:13px;line-height:1.8;margin:14px 0 20px}
+#usb-switch-dialog .row{margin:0}
+
+/* Dark mode uses neutral surfaces with one accent and separate status colors. */
+html[data-theme=dark] {
+  color-scheme: dark;
+  --dark-page: #111216;
+  --dark-panel: #17191e;
+  --dark-surface: #1e2026;
+  --dark-field: #252830;
+  --dark-hover: #2d313b;
+  --dark-inset: #15171c;
+  --dark-line: #353941;
+  --dark-control-line: #454b57;
+  --dark-text: #e7e9ef;
+  --dark-muted: #aeb4c1;
+  --dark-accent: #b4c0ff;
+  --dark-accent-bg: #2c3450;
+  --dark-action: #bcc6ff;
+  --dark-action-hover: #d2d9ff;
+  --dark-action-ink: #1a2241;
+  --dark-good: #9ad9bf;
+  --dark-good-bg: #23362f;
+  --dark-warn: #efca8f;
+  --dark-warn-bg: #362e23;
+  --dark-warn-line: #68543a;
+  --dark-error: #f4b6bc;
+  --dark-error-bg: #3b2a30;
+  --dark-error-line: #69444e;
+}
+
+html[data-theme=dark] body {
+  background: radial-gradient(ellipse at 50% 0%, #1e212a, var(--dark-page) 650px);
+  color: var(--dark-text);
+}
+
+html[data-theme=dark] .container {
+  background: var(--dark-panel);
+  border-color: var(--dark-line);
+  box-shadow: 0 20px 65px #0006;
+}
+
+html[data-theme=dark] :is(#panel-about, #panel-flash, #tool-tabs) {
+  background: var(--dark-panel);
+  color: var(--dark-text);
+  border-color: var(--dark-line);
+}
+
+html[data-theme=dark] :is(.rainy-connection, .about-card,
+  .theme-card, .theme-confirmation, .theme-local-help, .theme-browser-header) {
+  background: var(--dark-surface);
+  color: var(--dark-text);
+  border-color: var(--dark-line);
+}
+
+html[data-theme=dark] .about-card {
+  box-shadow: 0 6px 18px #0002;
+}
+
+html[data-theme=dark] :is(.bar, #log, #catalog-error) {
+  background: var(--dark-inset);
+  border-color: var(--dark-line);
+  color: var(--dark-muted);
+}
+
+html[data-theme=dark] :is(#catalog-dialog, #usb-switch-dialog) {
+  background: var(--dark-panel);
+  color: var(--dark-text);
+  border-color: var(--dark-line);
+  box-shadow: 0 20px 60px #0008;
+}
+
+html[data-theme=dark] :is(#catalog-dialog, #usb-switch-dialog)::backdrop {
+  background: #090a0ed0;
+}
+
+html[data-theme=dark] :is(.connection-title, .theme-local-help h3, .catalog-entry h4) {
+  color: var(--dark-text);
+}
+
+html[data-theme=dark] :is(.connection-note, .flash-log,
+  .theme-tag, .theme-meta, .theme-description, .theme-tested, .theme-browser-header p,
+  #catalog-status, .theme-local-help, .theme-confirmation label, .theme-confirmation code,
+  .catalog-entry p, .catalog-entry code, .tip) {
+  color: var(--dark-muted);
+}
+
+html[data-theme=dark] .catalog-entry {
+  border-color: var(--dark-line);
+}
+
+html[data-theme=dark] :is(.theme-local-help a, .theme-local-help code, .catalog-entry a) {
+  color: var(--dark-accent);
+  border-color: var(--dark-control-line);
+}
+
+html[data-theme=dark] #catalog-error-details {
+  color: var(--dark-error);
+}
+
+html[data-theme=dark] #tool-tabs button {
+  color: var(--dark-muted);
+}
+
+html[data-theme=dark] #tool-tabs button:hover {
+  background: var(--dark-field);
+  color: var(--dark-text);
+}
+
+html[data-theme=dark] #tool-tabs button[aria-selected=true] {
+  background: var(--dark-accent-bg);
+  color: var(--dark-accent);
+  border-bottom-color: var(--dark-accent);
+}
+
+html[data-theme=dark] :is(.connection-actions button, #usb-switch-dialog button, .theme-browser-header button, .theme-actions button, .theme-actions a) {
+  background: var(--dark-field);
+  color: var(--dark-text);
+  border-color: var(--dark-control-line);
+}
+
+html[data-theme=dark] :is(.connection-actions button, #usb-switch-dialog button, .theme-browser-header button, .theme-actions button, .theme-actions a):hover:not(:disabled) {
+  background: var(--dark-hover);
+  filter: none;
+}
+
+html[data-theme=dark] :is(.connection-actions #connection-connect,
+  #catalog-dialog #catalog-apply, #catalog-dialog .theme-select, #usb-switch-dialog .primary) {
+  background: var(--dark-action);
+  color: var(--dark-action-ink);
+  border-color: var(--dark-action);
+}
+
+html[data-theme=dark] :is(.connection-actions #connection-connect,
+  #catalog-dialog #catalog-apply, #catalog-dialog .theme-select, #usb-switch-dialog .primary):hover:not(:disabled) {
+  background: var(--dark-action-hover);
+}
+
+html[data-theme=dark] :is(button, a, select, input, summary):focus-visible {
+  outline-color: var(--dark-accent);
+}
+
+html[data-theme=dark] .theme-confirmation input {
+  accent-color: var(--dark-action);
+}
+
+html[data-theme=dark] #barFill { background: var(--dark-accent); }
+html[data-theme=dark] .connection-dot { background: var(--dark-muted); }
+html[data-theme=dark] .rainy-connection[data-connected=true] .connection-dot {
+  background: var(--dark-good);
+  box-shadow: 0 0 0 4px var(--dark-good-bg);
+}
+html[data-theme=dark] .rainy-connection[data-error=true] .connection-dot {
+  background: var(--dark-warn);
+  box-shadow: 0 0 0 4px var(--dark-warn-bg);
+}
+
+html[data-theme=dark] .about-card {
+  --about-ink: var(--dark-text);
+  --about-muted: var(--dark-muted);
+  --about-line: var(--dark-line);
+  --about-field: var(--dark-field);
+  --about-accent: var(--dark-accent);
+  --about-tint: var(--dark-accent-bg);
+  --about-gradient: linear-gradient(115deg, #2a3043, var(--dark-surface));
+}
+
+html[data-theme=dark] .communication-log-empty {
+  background: var(--dark-inset);
+  border-color: var(--dark-control-line);
+  color: var(--dark-muted);
+}
+
+html[data-theme=dark] .communication-log-icon {
+  background: var(--dark-accent-bg);
+  color: var(--dark-accent);
+}
+
+#panel-flash {
+  --flash-bg: #f7f8fd;
+  --flash-surface: #fff;
+  --flash-subtle: #f5f7fc;
+  --flash-line: #dce5f3;
+  --flash-ink: #26354d;
+  --flash-muted: #586983;
+  --flash-accent: #365aa4;
+  --flash-action: #3659a9;
+  --flash-action-hover: #29488e;
+  --flash-action-ink: #fff;
+  --flash-tint: #eaf0ff;
+  --flash-ready: #19614b;
+  --flash-error: #a33d4d;
+  --flash-error-bg: #faecf0;
+  --flash-warn: #7c5725;
+  --flash-warn-bg: #fff6e5;
+  background: var(--flash-bg);
+  color: var(--flash-ink);
+}
+
+html[data-theme=dark] #panel-flash {
+  --flash-bg: var(--dark-panel);
+  --flash-surface: var(--dark-surface);
+  --flash-subtle: var(--dark-field);
+  --flash-line: var(--dark-line);
+  --flash-ink: var(--dark-text);
+  --flash-muted: var(--dark-muted);
+  --flash-accent: var(--dark-accent);
+  --flash-action: var(--dark-action);
+  --flash-action-hover: var(--dark-action-hover);
+  --flash-action-ink: var(--dark-action-ink);
+  --flash-tint: var(--dark-accent-bg);
+  --flash-ready: var(--dark-good);
+  --flash-error: var(--dark-error);
+  --flash-error-bg: var(--dark-error-bg);
+  --flash-warn: var(--dark-warn);
+  --flash-warn-bg: var(--dark-warn-bg);
+}
+
+.flash-intro {padding: 2px 3px 17px;}
+.flash-intro h2 {font-size: 24px; letter-spacing: -.02em;}
+.flash-intro p {margin-top: 5px; color: var(--flash-muted); font-size: 13px; line-height: 1.6;}
+
+.flash-guide-card {
+  margin-bottom: 12px;
+  padding: 18px;
+  border: 1px solid var(--flash-line);
+  border-radius: 15px;
+  background: var(--flash-surface);
+}
+
+.flash-guide-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.flash-guide-heading > span {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  background: var(--flash-tint);
+  color: var(--flash-accent);
+  font-size: 12px;
+}
+
+.flash-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  border: 0;
+  min-width: 0;
+}
+
+.flash-choices label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 12px;
+  border: 1px solid var(--flash-line);
+  border-radius: 10px;
+  background: var(--flash-subtle);
+  cursor: pointer;
+}
+
+.flash-choices label:has(input:checked) {
+  border-color: var(--flash-accent);
+  background: var(--flash-tint);
+}
+
+.flash-choices label:has(input:disabled) {cursor: default; opacity: .65;}
+.flash-choices label:has(input:focus-visible) {outline: 2px solid var(--flash-accent); outline-offset: 2px;}
+.flash-choices input, .fw-confirm input {flex: none; margin-top: 3px; accent-color: var(--flash-accent);}
+.flash-choices strong {display: block; font-size: 13px;}
+.flash-choices small {display: block; color: var(--flash-muted); font-size: 12px; line-height: 1.55; margin-top: 3px;}
+
+.flash-file-picker {margin-top: 12px;}
+#fw-source-options[hidden] ~ .flash-file-picker {margin-top: 0;}
+.flash-file-picker > p, .flash-message {font-size: 12px; color: var(--flash-muted); line-height: 1.65;}
+.flash-message:empty {display: none;}
+.flash-message[data-error=true] {color: var(--flash-error);}
+#fw-status:not(:empty) {margin-top: 11px;}
+
+.flash-choice-action, .flash-update-actions {display: flex; align-items: center; flex-wrap: wrap; gap: 8px 11px;}
+.flash-choice-action {margin-top: 10px;}
+.flash-update-actions {margin-top: 13px;}
+.flash-update-actions .flash-message {flex: 1 1 170px;}
+
+#panel-flash button {padding: 9px 14px; font-size: 13px; font-weight: 600;}
+#panel-flash button:focus-visible {outline: 2px solid var(--flash-accent); outline-offset: 2px;}
+#panel-flash .primary {background: var(--flash-action); color: var(--flash-action-ink);}
+#panel-flash .primary:hover:not(:disabled) {background: var(--flash-action-hover);}
+#panel-flash .ghost {background: var(--flash-subtle); color: var(--flash-ink); border: 1px solid var(--flash-line);}
+#panel-flash .danger {background: var(--flash-error-bg); color: var(--flash-error);}
+#panel-flash #btnStart:disabled {background: var(--flash-subtle); color: var(--flash-muted); opacity: .8;}
+#panel-flash #btnCancel:disabled,
+#panel-flash:has(#flash-workflow[data-phase=awaiting]) #btnStart {display: none;}
+
+.flash-draft, .flash-source-summary, .flash-workflow {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--flash-line);
+  border-radius: 10px;
+  background: var(--flash-subtle);
+}
+
+.flash-draft-name, .flash-source-summary strong {font-size: 14px; overflow-wrap: anywhere;}
+.fw-confirm {display: flex; align-items: flex-start; gap: 8px; margin-top: 8px; font-size: 12px; line-height: 1.65; cursor: pointer;}
+.flash-summary-row {display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;}
+.flash-summary-label {display: block; color: var(--flash-ready); font-size: 12px; margin-bottom: 3px;}
+
+.flash-disclosure {margin-top: 10px; color: var(--flash-muted, #586983); font-size: 12px; line-height: 1.65;}
+.flash-disclosure summary {width: fit-content; cursor: pointer;}
+.flash-disclosure > p, .flash-file-details {margin-top: 6px; overflow-wrap: anywhere;}
+.flash-file-details {display: grid; grid-template-columns: fit-content(42%) minmax(0, 1fr); gap: 5px 12px;}
+.flash-file-details dd {margin: 0; color: var(--flash-ink);}
+.flash-disclosure code {font: 11px/1.55 Consolas, monospace; overflow-wrap: anywhere;}
+.flash-error-details {color: var(--flash-error);}
+
+.flash-preparation {margin-top: 11px; font-size: 13px; line-height: 1.6;}
+.flash-preparation .flash-warning {margin: 5px 0 0; color: var(--flash-warn); font-size: 12px;}
+.flash-progress-heading {display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 7px;}
+.flash-progress-heading h4 {font-size: 13px;}
+.flash-progress-heading #pct {font-size: 12px; font-weight: 600; color: var(--flash-accent);}
+.flash-workflow .bar {height: 7px; background: var(--flash-line);}
+#flash-step-note {margin-top: 8px; font-size: 12px; line-height: 1.65;}
+.flash-workflow[data-phase=failed] #flash-step-note {color: var(--flash-error);}
+.flash-workflow[data-phase=success] #flash-step-note {color: var(--flash-ready);}
+.flash-boot-help {margin-top: 8px; padding: 10px 11px; border-radius: 8px; background: var(--flash-warn-bg); color: var(--flash-warn);}
+.flash-boot-help p {margin-bottom: 7px; font-size: 12px; line-height: 1.65;}
+#panel-flash .flash-boot-help button {background: var(--flash-warn); color: var(--flash-warn-bg);}
+
+#flash-steps {list-style: none; display: flex; flex-wrap: wrap; gap: 5px 12px; margin-top: 7px;}
+#flash-steps li {display: flex; align-items: center; gap: 4px;}
+.flash-step-number {font-size: 10px; font-weight: 600;}
+#flash-steps li[data-state=done] {color: var(--flash-ready);}
+#flash-steps li[data-state=current] {color: var(--flash-accent); font-weight: 600;}
+#flash-steps li[data-state=failed] {color: var(--flash-error);}
+
+#panel-flash :is(.flash-choices, .flash-choice-action, .flash-file-picker, .flash-draft, .flash-source-summary,
+  .flash-workflow, .flash-boot-help, .flash-disclosure, .flash-message, .flash-choices label)[hidden] {display: none;}
+
+#panel-flash .flash-log {color: var(--flash-muted);}
+html[data-theme=dark] #catalog-confirmation .flash-disclosure {--flash-muted: var(--dark-muted);}
+
+@media (max-width: 510px) {
+  #panel-flash {padding: 16px;}
+  .flash-choices {grid-template-columns: minmax(0, 1fr);}
+  .flash-guide-card {padding: 13px;}
+  .flash-intro h2 {font-size: 21px;}
+}
+
+html[data-theme=dark] #panel-info {
+  --info-page: var(--dark-panel);
+  --info-surface: var(--dark-surface);
+  --info-field: var(--dark-field);
+  --info-line: var(--dark-line);
+  --info-control: var(--dark-control-line);
+  --info-ink: var(--dark-text);
+  --info-muted: var(--dark-muted);
+  --info-accent: var(--dark-accent);
+  --info-switch-on-thumb: var(--dark-action-ink);
+  --info-good: var(--dark-good);
+  --info-good-bg: var(--dark-good-bg);
+  --info-warning: var(--dark-warn);
+  --info-warning-bg: var(--dark-warn-bg);
+  --info-preview-bg: #191b21;
+  --info-preview-highlight: #2b303a;
+}
+
+html[data-theme=dark] #rainy-manager {
+  --rm-page: var(--dark-panel);
+  --rm-surface: var(--dark-surface);
+  --rm-field: var(--dark-field);
+  --rm-line: var(--dark-line);
+  --rm-control: var(--dark-control-line);
+  --rm-ink: var(--dark-text);
+  --rm-muted: var(--dark-muted);
+  --rm-accent: var(--dark-accent);
+  --rm-tint: var(--dark-accent-bg);
+  --rm-warning: var(--dark-warn);
+  --rm-warning-bg: var(--dark-warn-bg);
+  --rm-error: var(--dark-error);
+  --rm-error-bg: var(--dark-error-bg);
+  --rm-error-line: var(--dark-error-line);
+  --rm-error-hover: #4d333c;
+}
+html[data-theme=dark] #rm-dialog::backdrop {background: #090a0ed0;}

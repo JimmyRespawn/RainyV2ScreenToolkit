@@ -27,7 +27,7 @@ Use desktop **Chrome or Edge** with WebHID support.
 
 ### Hosted website
 
-Open the maintainer’s HTTPS website. No Node.js installation, scripts, or local server are required. Browse published themes or choose your own local BIN on the **Flash firmware** tab. Selecting firmware does not start flashing; review it and click **Start flashing** yourself.
+Open the maintainer’s HTTPS website. No Node.js installation, scripts, or local server are required. Browse published themes or choose your own local BIN on the **Flash firmware** tab. Selecting firmware does not start flashing; review it and click **Start update**.
 
 ### Offline ZIP
 
@@ -120,7 +120,7 @@ This is a community tool and is not affiliated with or endorsed by WOB. Offline 
 
 ## Receiver flashing
 
-Choose **2.4 GHz receiver** on the Flash firmware tab, select a raw receiver BIN, review its SHA-256 and target, and accept the receiver-specific risk statement. The file stays local. Screen themes remain screen-only; selections for the two targets are independent.
+Choose **2.4 GHz receiver** on the Flash firmware tab, select a raw receiver BIN, and confirm that the file is for your receiver. Open **Firmware details** to check its SHA-256. The file stays local. Screen themes remain screen-only; selections for the two targets are independent.
 
 The receiver transport follows the legacy tool’s boot command, erase, write and verify sequence. The receiver validator checks its RISC-V entry and known RAM vector layout; it does not use the screen’s ARM vector rules. A conservative **56 KiB tool limit** applies; it is not a statement of physical Flash capacity. Different image layouts are rejected. The version is not inferred from a filename and is not fixed to 0x26 or 0x27.
 

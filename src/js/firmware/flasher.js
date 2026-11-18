@@ -20,28 +20,15 @@ let outId = 0;           // 探测到的输出报告 ID
 let outLen = 0;          // 探测到的输出报告长度
 
 // ======================= 界面 =======================
-function pick(which){if(running||!FIRMWARE[which])return;target=which;setStatus('待刷入：'+FIRMWARE[which].version);}
-
-function setStatus(text, cls) {
-  const el = document.getElementById('status');
-  el.textContent = text;
-  el.style.color = cls === 'ok' ? '#1b7f3b' : cls === 'err' ? '#c0392b' : '#333';
-}
-
-function showBanner(text, cls) {
-  const el = document.getElementById('banner');
-  el.textContent = text;
-  el.className = 'banner ' + (cls || 'ok');
-}
-function hideBanner() {
-  const el = document.getElementById('banner');
-  el.className = 'banner';
-  document.title = 'RainyMurphy v1.01';
+function pick(which) {
+  if (!running && FIRMWARE[which]) target = which;
 }
 
 function setProgress(pct) {
+  const rounded = Math.round(pct);
   document.getElementById('barFill').style.width = pct + '%';
-  document.getElementById('pct').textContent = Math.round(pct) + '%';
+  document.getElementById('pct').textContent = rounded + '%';
+  document.getElementById('flash-progress').ariaValueNow = String(rounded);
 }
 
 function log(text, cls) {
@@ -408,8 +395,8 @@ async function enterIap() {
 
   
   pendingFlash = fw;
-  log('设备已经在升级模式了，但浏览器还没授权过它 —— 点下面的【选择设备并继续】即可', 'warn');
-  throw new NeedGesture('设备已进入升级模式，点【选择设备并继续】在弹窗里选它');
+  log('设备已经在升级模式了，但浏览器还没授权过它 —— 请返回页面点击“选择设备并继续”', 'warn');
+  throw new NeedGesture('设备已进入升级模式，请点击“选择设备并继续”');
 }
 
 async function start() {
@@ -444,16 +431,14 @@ async function start() {
   cancelled = false;
   rxq = []; rxWait = null; outId = 0; outLen = 0;
   document.getElementById('btnStart').disabled = true;
-  { const b = document.getElementById('btnStart');
-    b.textContent = '开始烧录';
-    b.classList.remove('needpick'); }
   document.getElementById('btnCancel').disabled = false;
   setProgress(0);
-  hideBanner();
   log('==== 开始烧录：' + fw.name + ' 固件 ' + fw.version + ' ====');
 
   try {
+    window.RainyFlashSteps?.begin();
     const data = window.RainyFirmwareSource.bytesFor(fw);
+    window.RainyFlashSteps?.step(1);
     log('固件已就绪');
 
     if(dev&&dev.productId!==fw.appPid&&dev.productId!==fw.iapPid){try{await dev.close();}catch{}dev=null;}
@@ -479,34 +464,33 @@ async function start() {
 
     setProgress(1);
     resetRx();                           // 进升级模式时残留的应答不能算作擦除应答
+    window.RainyFlashSteps?.step(2);
     await iapErase(fw.startAddr);
     setProgress(6);
+    window.RainyFlashSteps?.step(3);
     await iapWrite(data, fw.startAddr, 6, 80);
+    window.RainyFlashSteps?.step(4);
     await iapVerify(data, fw.startAddr, 82, 98);
+    window.RainyFlashSteps?.step(5);
     await iapEnd();
+    window.RainyFlashSteps?.success();
     window.RainyConnection?.markFlashSuccess();
     pendingFlash = null;
     setProgress(100);
-    setStatus(fw.name + ' 烧录成功 ✓', 'ok');
-    showBanner('✅ ' + fw.name + ' 烧录成功 —— 固件 ' + fw.version, 'ok');
-    document.title = '✓ 烧录成功 · ' + fw.name;
     log('**** 烧录成功', 'ok');
   } catch (e) {
     if (e && e.needGesture) {
       
-      const b = document.getElementById('btnStart');
-      b.textContent = '选择设备并继续';
-      b.classList.add('needpick');
-      setStatus('设备已进入升级模式 —— 点【选择设备并继续】在弹窗里选它', 'warn');
       pendingFlash = pendingFlash || fw;
+      window.RainyFlashSteps?.awaiting();
     } else {
-      setStatus('烧录失败：' + e.message, 'err');
-      showBanner('❌ 烧录失败：' + e.message + '（可再点一次“开始烧录”重试）', 'err');
+      window.RainyFlashSteps?.stop(e.message,cancelled||e.userCancelled);
       log('**** 失败：' + e.message, 'err');
       pendingFlash = null;
     }
   } finally {
     running = false;
+    window.RainyFlashSteps?.refresh();
     document.getElementById('btnStart').disabled = false;
       document.getElementById('btnCancel').disabled = !pendingFlash;
     if (!pendingFlash) {
@@ -519,7 +503,7 @@ async function start() {
 async function cancel() {
   cancelled = true;
   if(!running&&pendingFlash){
-    pendingFlash=null;
+    pendingFlash=null;window.RainyFlashSteps?.stop('',true);
     try{if(dev)await dev.close();}catch{}
     dev=null;resetRx();document.getElementById('btnCancel').disabled=true;
     window.RainyConnection?.refreshUi();

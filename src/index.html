@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rainy75 V2 IPS 屏幕和接收器固件烧录、动画管理与设备信息工具。固件独立加载。">
-<meta name="color-scheme" content="light"><title>RainyMurphy v1.01</title>
+<meta name="color-scheme" content="light"><title>RainyMurphy v1.03</title>
 <link rel="icon" href="./assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./css/app.css"><link rel="stylesheet" href="./css/themes.css"><link rel="stylesheet" href="./css/appearance.css">
 <script defer src="./js/ui/appearance.js"></script>
 <script defer src="./js/firmware/flasher.js"></script>
 <script defer src="./js/device/screen-client.js"></script>
 <script defer src="./js/device/connection.js"></script>
+<script defer src="./js/device/recovery.js"></script>
 <script defer src="./js/ui/tabs.js"></script>
 <script defer src="./js/ui/animation-manager.js"></script>
 <script defer src="./js/ui/basic-info.js"></script>
@@ -16,43 +17,245 @@
 <script defer src="./js/firmware/receiver-validator.js"></script>
 <script defer src="./js/firmware/offline-files.js"></script>
 <script defer src="./js/firmware/source.js"></script>
+<script defer src="./js/ui/flash-steps.js"></script>
 <script defer src="./js/ui/theme-browser.js"></script>
 <script defer src="./js/ui/i18n.js"></script>
 </head>
 <body><main class="container">
-<header class="rainy-hero" aria-label="RainyMurphy v1.01">
- <div class="rainy-brand-row">
-  <div class="rainy-identity"><div class="rainy-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M11 24.5a6.5 6.5 0 0 1-.3-13A9 9 0 0 1 28 10a7.3 7.3 0 0 1 1 14.5H11Z" stroke="#d6e4ff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="m14 29-2 4m9-4-2 4m9-4-2 4" stroke="#8fbaff" stroke-width="2" stroke-linecap="round"/></svg></div><div class="rainy-brand-copy"><div class="rainy-eyebrow">RAINY75 V2 · SCREEN TOOLKIT</div><div class="rainy-title-row"><h1>RainyMurphy</h1><span class="rainy-version">v1.01</span></div></div></div>
-  <div class="rainy-controls"><label class="language-control"><select id="language" aria-label="Language / 语言"><option value="auto">Auto / 自动</option><option value="zh">简体中文</option><option value="en">English</option></select></label><label class="appearance-control"><span>外观</span><select id="appearance" aria-label="页面外观"><option value="auto">跟随系统</option><option value="light">浅色</option><option value="dark">暗色</option></select></label></div>
- </div>
- <div class="rainy-hero-footer"><p class="rainy-description">屏幕固件 · 动画管理 · 设备信息</p><div class="rainy-browser"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2" y="3" width="16" height="13" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 7h15M5 5h.01M7.5 5h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span>Chrome / Edge</span></div></div>
-</header>
 <div class="rainy-connection" id="connection-bar" data-connected="false"><span class="connection-dot" aria-hidden="true"></span><div class="connection-copy"><div class="connection-title" id="connection-title" role="status" aria-live="polite">尚未连接设备</div><p class="connection-note" id="connection-note">连接一次，即可使用设备信息、灯光和动画管理。</p></div><div class="connection-actions"><button type="button" id="connection-connect">连接设备</button><button type="button" id="connection-change" hidden>更换设备</button><button type="button" id="connection-disconnect" hidden>断开</button></div></div>
-<nav id="tool-tabs" role="tablist" aria-label="工具功能"><button type="button" id="tab-info" role="tab" aria-controls="panel-info" aria-selected="true" tabindex="0">基础信息</button><button type="button" id="tab-animation" role="tab" aria-controls="rainy-manager" aria-selected="false" tabindex="-1">屏幕动画管理</button><button type="button" id="tab-flash" role="tab" aria-controls="panel-flash" aria-selected="false" tabindex="-1">固件烧录</button><button type="button" id="tab-about" role="tab" aria-controls="panel-about" aria-selected="false" tabindex="-1">关于</button></nav>
-<section class="body tool-panel" id="panel-flash" role="tabpanel" aria-labelledby="tab-flash" hidden><div class="flash-target-control"><label for="fw-target">刷写目标</label><select id="fw-target"><option value="ips">IPS 屏幕</option><option value="rcv">2.4G 接收器</option></select><p>先选择目标，再选择对应的原始 BIN。文件只在本地读取，不会上传。</p></div><fieldset class="firmware-source-options"><legend>固件来源</legend><label id="fw-community-option"><input type="radio" name="firmware-source" id="fw-source-community" value="community" checked><span><strong>社区主题</strong><small>浏览封面与动画预览，选择喜欢的屏幕主题</small></span></label><label><input type="radio" name="firmware-source" id="fw-source-custom" value="custom"><span><strong>自定义 BIN</strong><small>选择自己准备的固件文件</small></span></label></fieldset><section class="firmware-community-panel" id="fw-community-panel"><h3>选择社区主题</h3><p>查看主题预览，确认后加载对应固件。社区主题仅适用于 IPS 屏幕。</p><button type="button" id="themes-open">浏览社区主题</button></section><section id="fw-custom-panel" class="fw-source-card" hidden aria-labelledby="fw-title"><h3 id="fw-title">选择屏幕固件</h3><input type="file" id="fw-file" accept=".bin,application/octet-stream" hidden><div class="fw-source-actions"><button type="button" id="fw-choose">选择屏幕 BIN</button></div><p id="fw-candidate">尚未选择外部文件</p><label class="fw-confirm"><input type="checkbox" id="fw-confirm" disabled><span id="fw-risk">我确认这是适用于 Rainy75 V2 IPS 彩屏、以 0x08004000 为起始地址的原始应用 BIN，不是主控／接收器固件或整片 Flash 备份。我已知晓刷写外部固件可能导致设备无法正常使用或硬件损坏，并自愿承担由此产生的风险及后果。</span></label><button type="button" id="fw-apply" disabled>使用所选固件</button><p class="fw-hint">选择文件不会自动烧录。结构检查不能确认固件的硬件兼容性或来源；SHA-256 只用于核对文件指纹。刷新后清空选择。</p></section><p id="fw-lock" role="status"></p><p id="fw-status" role="status" aria-live="polite">此开源版不内置固件，请在固件烧录页选择目标和对应 BIN。</p><section class="flash-source-summary" id="flash-source-summary" aria-labelledby="flash-source-heading"><div class="flash-source-heading"><span id="flash-source-heading">待刷入固件</span><span id="flash-source-type">尚未选择固件</span></div><strong id="flash-source-name">请先选择屏幕 BIN</strong><p class="flash-source-file" id="flash-source-file">—</p><dl class="flash-source-details"><dt>目标设备</dt><dd id="flash-target-name">Rainy75 V2 · IPS 彩屏</dd><dt>固件版本</dt><dd id="flash-source-version">—</dd><dt>文件大小</dt><dd id="flash-source-size">—</dd><dt>写入大小</dt><dd id="flash-source-write-size">—</dd></dl><details class="flash-source-fingerprint"><summary>SHA-256 文件指纹</summary><code id="flash-source-hash">—</code></details><p class="flash-connection-hint" id="flash-connection-hint">烧录需要 USB 有线连接</p><div class="fw-source-actions"><button type="button" id="fw-clear" disabled>清除所选固件</button></div><p class="flash-source-note">此处显示准备刷入的文件，不代表设备当前已安装的版本。可在本页更换固件。</p></section>
-<p class="flash-warning" id="flash-warning">请确认有线连接至设备，并确保刷写时不断连，设备不断电</p><div class="row"><button type="button" class="primary" id="btnStart" onclick="start()" disabled>开始烧录</button><button type="button" class="danger" id="btnCancel" onclick="cancel()" disabled>取消</button></div><div class="status" id="status" role="status" aria-live="polite">请先选择目标并加载对应的 BIN。</div><div class="banner" id="banner" role="status"></div><div class="bar" role="progressbar" aria-label="烧录进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="barFill"></div></div><div class="pct" id="pct">0%</div><details class="flash-log"><summary>烧录日志</summary><div id="log" role="log" aria-live="off"></div></details></section>
-<section id="rainy-manager" class="tool-panel" role="tabpanel" aria-labelledby="tab-animation" hidden><div class="rm-heading"><div><div class="rm-kicker">RAINY75 V2 · SCREEN</div><h2 id="rm-title">屏幕动画管理</h2><p>读取四个壁纸槽位，删除不需要的图片或动画。</p></div><span id="rm-badge">未连接</span></div>
-<div class="rm-notice">先关闭官方驱动页，用 USB 数据线连接键盘。这里无需刷固件。删除会清除所选壁纸中的 GIF 和 BIN；请保留原始素材以便重新上传。</div>
-<div class="rm-actions"><button id="rm-refresh" type="button" disabled>刷新槽位</button></div>
-<p id="rm-status" role="status" aria-live="polite">尚未读取设备，四个槽位的内容未知。</p>
-<div class="rm-grid" id="rm-slots"></div>
-<p class="rm-footnote">删除后，正常切换页面会跳过空槽位。官方云朵页不在此处管理。</p>
-<details class="rm-log"><summary>通信记录</summary><pre id="rm-log" aria-live="off"></pre><button id="rm-export" type="button">导出日志</button></details>
-<dialog id="rm-dialog" aria-labelledby="rm-dialog-title"><h3 id="rm-dialog-title">删除壁纸</h3><p id="rm-delete-desc"></p><ul id="rm-delete-files"></ul><p class="rm-warning">删除后本工具无法撤销，需要用官方驱动重新上传原始素材。</p><label><input id="rm-understand" type="checkbox"> 我确认清空这一页的全部素材</label><div class="rm-actions"><button id="rm-confirm" class="rm-delete" type="button" disabled>确认删除</button><button id="rm-cancel" type="button">保留素材</button></div></dialog>
-</section>
-<section class="body tool-panel" id="panel-info" role="tabpanel" aria-labelledby="tab-info"><div class="info-card">
- <div class="info-heading"><div><div class="info-eyebrow">DEVICE OVERVIEW</div><h2>Rainy75 V2</h2></div><div class="info-online"><span class="info-dot"></span><span id="info-mode">未连接设备</span></div></div>
- <div class="info-visual"><img src="./assets/keyboard.svg" alt="Rainy75 V2 键盘布局示意图" /></div>
- <div class="info-metrics">
- <div class="info-metric"><div class="info-metric-label">电池电量</div><div class="info-power"><span class="info-battery-icon" aria-hidden="true"><span id="info-fill"></span></span><strong id="info-battery">—</strong></div></div>
- <div class="info-metric"><div class="info-metric-label">充电状态</div><div id="info-charge">等待读取</div></div>
- <div class="info-metric info-light-row"><div class="info-metric-label">键盘灯光</div><div class="info-light-controls"><button type="button" id="info-light" role="switch" aria-label="键盘 RGB 灯光" aria-checked="false" disabled><span></span></button><span id="info-light-state">未读取</span></div></div>
-</div><div class="info-actions"><button type="button" id="info-refresh" disabled>刷新信息</button></div>
- <p id="info-status" role="status" aria-live="polite">支持 USB 有线和 2.4GHz 接收器</p>
-</div>
-<div class="info-extra"><div class="info-meta"><span>最近更新 · <span id="info-time">—</span></span><span>预计续航 · <span id="info-runtime">等待读取</span></span></div><details><summary>设备详情</summary><dl><dt>设备名称</dt><dd id="info-name">未连接</dd><dt>设备标识</dt><dd id="info-id">—</dd></dl><p style="margin-top:10px">无线时请选择接收器并唤醒键盘。请先关闭官网驱动页面，使用顶部统一连接；刷写固件时连接会自动交接。续航为粗略理论估算：10000mAh、1kHz、RGB 关闭，假设整机平均电流 20–50mA（并非实测），满电约 200–500 小时，再按当前电量折算。彩屏亮度、休眠、电池损耗及电量误差尚未校准；开启 RGB 后此估算不适用。</p></details><div id="info-diagnostics"></div></div></section>
-<section class="body tool-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden><div class="about-card"><div class="about-icon" aria-hidden="true">☁</div><h2>RainyMurphy</h2><p class="about-credit">Made by JimmyRespawn</p><p class="about-version">v1.01 · 开源网页工具</p><div class="about-divider"></div><dl class="about-list"><dt>适用设备</dt><dd>Rainy75 V2 · IPS 彩屏</dd><dt>固件分发</dt><dd>与网页解耦，默认不附带 BIN</dd><dt>源码许可</dt><dd>MIT · 固件保留各自许可</dd><dt>运行方式</dt><dd>Chrome / Edge · HTTPS 或 localhost</dd></dl><div class="about-note">连接、灯光和动画管理无需加载固件。需要升级屏幕或接收器时，在固件烧录页选择目标和对应的原始应用 BIN。文件不会上传，也不会跨页面会话保存。</div></div>
+<nav id="tool-tabs" role="tablist" aria-label="工具功能"><button type="button" id="tab-info" role="tab" aria-controls="panel-info" aria-selected="true" tabindex="0">基础信息</button><button type="button" id="tab-flash" role="tab" aria-controls="panel-flash" aria-selected="false" tabindex="-1">固件烧录</button><button type="button" id="tab-animation" role="tab" aria-controls="rainy-manager" aria-selected="false" tabindex="-1">屏幕动画管理</button><button type="button" id="tab-about" role="tab" aria-controls="panel-about" aria-selected="false" tabindex="-1">关于</button></nav>
+<section class="body tool-panel" id="panel-flash" role="tabpanel" aria-labelledby="tab-flash" hidden>
+  <header class="flash-intro">
+    <h2>更新固件</h2>
+    <p>给 Rainy75 V2 的键盘彩屏换主题，或更新 2.4G 接收器。</p>
+  </header>
 
-<section class="fw-source-card" aria-labelledby="catalog-title"><h3 id="catalog-title">社区主题与固件目录</h3><p class="fw-hint">浏览同屏幕比例的静态封面与动画预览，选用后核对文件，再由你点击开始烧录。</p><div class="fw-source-actions"><button type="button" id="themes-open-about">浏览主题</button></div></section></section>
-</main><dialog id="catalog-dialog" aria-labelledby="catalog-title-dialog"><div class="theme-browser-header"><div><h2 id="catalog-title-dialog">社区主题</h2><p>Rainy75 V2 IPS · 320 × 172</p></div><div class="theme-browser-actions"><button type="button" id="catalog-refresh">刷新</button><button type="button" id="catalog-close" aria-label="关闭社区主题">关闭</button></div></div><div class="theme-browser-content"><p id="catalog-status" role="status" aria-live="polite">正在准备主题目录…</p><section class="theme-local-help" id="catalog-help" hidden><h3>请使用本地服务打开</h3><p>双击 HTML 的 <code>file://</code> 方式无法读取社区目录和 BIN，这不是固件文件损坏。</p><p>在 RainyMurphy 文件夹双击 <code>Start-RainyMurphy.cmd</code>，会启动本地服务并自动打开浏览器（需要 Node.js 20+）。使用期间保留服务窗口。</p><p>也可在项目目录运行 <code>npm run dev</code>，然后访问 <a href="http://127.0.0.1:4173/" target="_blank" rel="noopener">http://127.0.0.1:4173</a>。</p><p>本机私有主题仍不会上传；在线版正常使用 HTTPS 地址即可。</p></section><details id="catalog-error-details" hidden><summary>查看原因</summary><pre id="catalog-error"></pre></details><div id="catalog-list"></div><section class="theme-confirmation" id="catalog-confirmation" hidden><h3 id="catalog-selected"></h3><code id="catalog-selected-hash"></code><label><input type="checkbox" id="catalog-confirm"><span>我确认这是适用于 Rainy75 V2 IPS 彩屏的固件。我已知晓刷写外部固件可能导致设备无法正常使用或硬件损坏，并自愿承担由此产生的风险及后果。</span></label><button type="button" id="catalog-apply" disabled>使用并返回烧录</button></section></div></dialog><noscript>此工具需要启用 JavaScript。</noscript></body>
+  <section class="flash-guide-card" aria-labelledby="flash-target-title">
+    <h3 class="flash-guide-heading" id="flash-target-title"><span aria-hidden="true">1</span>选择要更新的部件</h3>
+    <fieldset class="flash-choices" id="fw-target" aria-labelledby="flash-target-title">
+      <label><input type="radio" name="flash-target" id="fw-target-ips" value="ips" checked><span><strong>键盘彩屏</strong><small>换主题或更新屏幕固件</small></span></label>
+      <label><input type="radio" name="flash-target" id="fw-target-rcv" value="rcv"><span><strong>2.4G 接收器</strong><small>更新插在电脑上的无线接收器</small></span></label>
+    </fieldset>
+  </section>
+
+  <section class="flash-guide-card" aria-labelledby="flash-content-title">
+    <h3 class="flash-guide-heading" id="flash-content-title"><span aria-hidden="true">2</span>选择要安装的内容</h3>
+    <fieldset class="flash-choices" id="fw-source-options" aria-label="固件来源">
+      <label id="fw-community-option"><input type="radio" name="firmware-source" id="fw-source-community" value="community" checked><span><strong>屏幕主题</strong><small>先看预览，再选喜欢的主题</small></span></label>
+      <label><input type="radio" name="firmware-source" id="fw-source-custom" value="custom"><span><strong>从电脑选文件</strong><small>适合已经有固件文件时</small></span></label>
+    </fieldset>
+    <div class="flash-choice-action" id="fw-community-panel">
+      <button type="button" class="primary" id="themes-open">浏览主题</button>
+    </div>
+    <div class="flash-file-picker" id="fw-custom-panel" hidden>
+      <p id="fw-title">选择适用于 Rainy75 V2 彩屏的 .bin 文件。文件只在本机读取。</p>
+      <input type="file" id="fw-file" accept=".bin,application/octet-stream" aria-labelledby="fw-title" hidden>
+      <div class="flash-choice-action"><button type="button" class="primary" id="fw-choose">选择文件</button></div>
+      <div class="flash-draft" id="fw-draft" hidden>
+        <p id="fw-candidate" class="flash-draft-name"></p>
+        <label class="fw-confirm"><input type="checkbox" id="fw-confirm" disabled><span>我确认文件适用于所选部件，并了解刷错固件可能导致设备无法使用或损坏。</span></label>
+        <div class="flash-choice-action">
+          <button type="button" class="primary" id="fw-apply" disabled>使用这个文件</button>
+          <button type="button" class="ghost" id="fw-discard">放弃这个文件</button>
+        </div>
+      </div>
+      <details class="flash-disclosure">
+        <summary>文件适用范围</summary>
+        <p id="fw-risk"></p>
+        <p>网页会检查文件格式，固件来源和设备兼容性请与提供方确认。</p>
+      </details>
+    </div>
+    <p id="fw-status" class="flash-message" role="status" aria-live="polite"></p>
+    <details class="flash-disclosure flash-error-details" id="fw-error-details" hidden><summary>查看错误详情</summary><p id="fw-error"></p></details>
+  </section>
+
+  <section class="flash-guide-card" aria-labelledby="flash-review-title">
+    <h3 class="flash-guide-heading" id="flash-review-title" tabindex="-1"><span aria-hidden="true">3</span>连接设备并更新</h3>
+    <div class="flash-source-summary" id="flash-source-summary" role="group" aria-labelledby="flash-source-heading" hidden>
+      <div class="flash-summary-row">
+        <div>
+          <span class="flash-summary-label" id="flash-source-heading">本次要安装的内容</span>
+          <strong id="flash-source-name"></strong>
+        </div>
+        <button type="button" class="ghost" id="fw-clear" disabled>清除选择</button>
+      </div>
+      <details class="flash-disclosure" id="flash-source-details">
+        <summary>固件详情</summary>
+        <dl class="flash-file-details">
+          <dt>目标设备</dt><dd id="flash-target-name"></dd>
+          <dt>固件来源</dt><dd id="flash-source-type"></dd>
+          <dt>文件名</dt><dd id="flash-source-file"></dd>
+          <dt>固件版本</dt><dd id="flash-source-version"></dd>
+          <dt>文件大小</dt><dd id="flash-source-size"></dd>
+          <dt>写入大小</dt><dd id="flash-source-write-size"></dd>
+          <dt>文件指纹（SHA-256）</dt><dd><code id="flash-source-hash"></code></dd>
+        </dl>
+      </details>
+    </div>
+    <div class="flash-preparation">
+      <p id="flash-connection-hint">用 USB 数据线把键盘连到电脑，并切到有线模式。</p>
+      <p class="flash-warning">请先关闭官方驱动。更新期间请保持设备连接，别关闭此页面。</p>
+    </div>
+    <section class="flash-workflow" id="flash-workflow" data-phase="idle" aria-labelledby="flash-progress-title" hidden>
+      <div class="flash-progress-heading"><h4 id="flash-progress-title">更新进度</h4><span id="pct" aria-hidden="true">0%</span></div>
+      <div class="bar" id="flash-progress" role="progressbar" aria-labelledby="flash-progress-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="barFill"></div></div>
+      <p id="flash-step-note" role="status" aria-live="polite"></p>
+      <div class="flash-boot-help" id="flash-boot-help" hidden>
+        <p>点击下方按钮，在浏览器弹窗中选择升级模式下的设备。</p>
+        <button type="button" id="flash-boot-continue">选择设备并继续</button>
+      </div>
+      <details class="flash-disclosure flash-error-details" id="flash-error-details" hidden><summary>查看错误详情</summary><p id="flash-step-error"></p></details>
+      <details class="flash-disclosure flash-progress-details">
+        <summary>查看更新步骤</summary>
+        <ol id="flash-steps">
+          <li data-state="pending"><span class="flash-step-number" aria-hidden="true">1</span><span>检查文件</span></li>
+          <li data-state="pending"><span class="flash-step-number" aria-hidden="true">2</span><span>准备设备</span></li>
+          <li data-state="pending"><span class="flash-step-number" aria-hidden="true">3</span><span>擦除旧固件</span></li>
+          <li data-state="pending"><span class="flash-step-number" aria-hidden="true">4</span><span>写入固件</span></li>
+          <li data-state="pending"><span class="flash-step-number" aria-hidden="true">5</span><span>核对写入结果</span></li>
+          <li data-state="pending"><span class="flash-step-number" aria-hidden="true">6</span><span>结束更新</span></li>
+        </ol>
+      </details>
+    </section>
+    <div class="flash-update-actions">
+      <button type="button" class="primary" id="btnStart" onclick="start()" aria-describedby="flash-next" disabled>开始更新</button>
+      <button type="button" class="danger" id="btnCancel" onclick="cancel()" disabled>停止更新</button>
+      <p id="flash-next" class="flash-message">请先完成第 2 步，再开始更新。</p>
+    </div>
+  </section>
+  <details class="flash-log communication-log"><summary>烧录日志</summary><div id="log" role="log" aria-live="off"></div><div class="communication-log-empty"><span class="communication-log-icon" aria-hidden="true"></span><p>暂无烧录记录</p></div></details>
+</section>
+<section id="rainy-manager" class="body tool-panel" role="tabpanel" aria-labelledby="tab-animation" hidden>
+  <header class="rm-heading">
+    <h2 id="rm-title">屏幕动画管理</h2>
+    <button id="rm-refresh" type="button" disabled>刷新槽位</button>
+  </header>
+
+  <div class="rm-overview">
+    <p id="rm-status" role="status">用 USB 数据线连接键盘，再点顶部的「连接设备」。</p>
+    <span id="rm-badge" hidden></span>
+  </div>
+
+  <div class="rm-grid" id="rm-slots"></div>
+  <p class="rm-footnote">切换壁纸时会跳过空槽位。官方云朵页由键盘内置。</p>
+
+  <details class="rm-log communication-log">
+    <summary>通信记录</summary>
+    <pre id="rm-log" aria-live="off"></pre>
+    <div class="communication-log-empty"><span class="communication-log-icon" aria-hidden="true"></span><p>暂无通信记录</p></div>
+    <button id="rm-export" type="button">导出日志</button>
+  </details>
+
+  <dialog id="rm-dialog" aria-labelledby="rm-dialog-title">
+    <h3 id="rm-dialog-title">删除壁纸</h3>
+    <p id="rm-delete-desc"></p>
+    <ul id="rm-delete-files" class="rm-files"></ul>
+    <p class="rm-warning">删除后本工具无法撤销，需要用官方驱动重新上传原始素材。</p>
+    <label><input id="rm-understand" type="checkbox"> 我确认清空这一页的全部素材</label>
+    <div class="rm-actions">
+      <button id="rm-cancel" type="button" autofocus>保留素材</button>
+      <button id="rm-confirm" class="rm-delete" type="button" disabled>确认删除</button>
+    </div>
+  </dialog>
+</section>
+<section class="body tool-panel" id="panel-info" role="tabpanel" aria-labelledby="tab-info">
+  <header class="info-heading">
+    <div>
+      <h2>Rainy75 V2</h2>
+      <div class="info-online"><span class="info-dot" aria-hidden="true"></span><span id="info-mode">未连接设备</span></div>
+    </div>
+    <button type="button" id="info-refresh" disabled>刷新信息</button>
+  </header>
+
+  <dl class="info-metrics">
+    <div class="info-metric">
+      <dt>电池电量</dt>
+      <dd><strong id="info-battery">—</strong><span class="info-battery-track" aria-hidden="true"><span id="info-fill"></span></span></dd>
+    </div>
+    <div class="info-metric">
+      <dt>充电状态</dt>
+      <dd><span id="info-charge" data-charge="unknown">未读取</span></dd>
+    </div>
+    <div class="info-metric info-light-row">
+      <dt>键盘灯光</dt>
+      <dd class="info-light-controls"><button type="button" id="info-light" role="switch" aria-label="键盘 RGB 灯光" aria-checked="false" disabled><span></span></button><span id="info-light-state">未读取</span></dd>
+    </div>
+  </dl>
+  <p id="info-status" role="status">连接后会自动读取设备状态。</p>
+
+  <div class="info-preview">
+    <div class="info-visual"><img src="./assets/keyboard.svg" width="760" height="320" alt="Rainy75 V2 键盘布局示意图"></div>
+    <dl class="info-meta">
+      <div><dt>预计续航</dt><dd id="info-runtime">等待读取</dd></div>
+      <div><dt>最近更新</dt><dd id="info-time">—</dd></div>
+    </dl>
+  </div>
+
+  <div class="info-extra">
+    <details>
+      <summary>设备详情</summary>
+      <div class="info-details">
+        <dl>
+          <div><dt>设备名称</dt><dd id="info-name">未连接</dd></div>
+          <div><dt>设备标识</dt><dd id="info-id">—</dd></div>
+        </dl>
+        <p>使用 2.4G 接收器时，如果读不到数据，可以先按一下键盘唤醒设备。</p>
+        <p>续航按 10000 mAh、1 kHz、灯光关闭和平均电流 20–50 mA 估算。彩屏、休眠和电池损耗等因素尚未实测。</p>
+      </div>
+    </details>
+    <details class="communication-log">
+      <summary>通信日志</summary>
+      <pre id="info-trace"></pre>
+      <div class="communication-log-empty"><span class="communication-log-icon" aria-hidden="true"></span><p>暂无通信记录</p></div>
+    </details>
+  </div>
+</section>
+<section class="body tool-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+  <div class="about-card">
+    <header class="about-intro">
+      <div class="about-icon" aria-hidden="true">☁</div>
+      <div class="about-identity">
+        <div class="about-name"><h2>RainyMurphy</h2><span class="about-version">v1.03</span></div>
+        <p class="about-subtitle">开源网页工具</p>
+        <p class="about-credit">Made by JimmyRespawn</p>
+      </div>
+    </header>
+    <div class="about-content">
+      <section class="about-group" aria-labelledby="about-preferences-title">
+        <h3 id="about-preferences-title">显示设置</h3>
+        <div class="about-settings">
+          <label><span>语言</span><select id="language"><option value="auto">Auto / 自动</option><option value="zh">简体中文</option><option value="en">English</option></select></label>
+          <label><span>外观</span><select id="appearance"><option value="auto">跟随系统</option><option value="light">浅色</option><option value="dark">暗色</option></select></label>
+        </div>
+      </section>
+      <section class="about-group" aria-labelledby="about-support-title">
+        <h3 id="about-support-title">项目与兼容性</h3>
+        <dl class="about-list">
+          <div>
+            <dt>适用设备</dt>
+            <dd><strong>Rainy75 V2</strong><span>IPS 彩屏</span></dd>
+          </div>
+          <div>
+            <dt>运行方式</dt>
+            <dd><strong>Chrome / Edge</strong><span>HTTPS、localhost 或离线包</span></dd>
+          </div>
+          <div>
+            <dt>固件分发</dt>
+            <dd><strong>按需选择固件</strong><span>网页版默认不附带 BIN</span></dd>
+          </div>
+          <div>
+            <dt>源码许可</dt>
+            <dd><strong>MIT</strong><span>固件保留各自许可</span></dd>
+          </div>
+        </dl>
+        <div class="about-note">
+          <h4>固件使用说明</h4>
+          <p>连接设备、控制灯光和管理动画可直接使用。更新彩屏或接收器时，请在「固件烧录」选择对应的 BIN。</p>
+          <p class="about-note-privacy">本地文件仅在当前页面处理，刷新后清空选择。</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+</main><dialog id="usb-switch-dialog" aria-labelledby="usb-switch-title"><h3 id="usb-switch-title">检测到 USB 有线键盘</h3><p>是否切换到 USB 连接？切换后将通过有线连接读取状态和管理屏幕。</p><div class="row"><button type="button" class="primary" id="usb-switch-confirm">切换 USB</button><button type="button" id="usb-switch-cancel">暂不切换</button></div></dialog><dialog id="catalog-dialog" aria-labelledby="catalog-title-dialog"><div class="theme-browser-header"><div><h2 id="catalog-title-dialog">社区主题</h2><p>Rainy75 V2 IPS · 320 × 172</p></div><div class="theme-browser-actions"><button type="button" id="catalog-refresh">刷新</button><button type="button" id="catalog-close" aria-label="关闭社区主题">关闭</button></div></div><div class="theme-browser-content"><p id="catalog-status" role="status" aria-live="polite">正在准备主题目录…</p><section class="theme-local-help" id="catalog-help" hidden><h3>请使用本地服务打开</h3><p>双击 HTML 的 <code>file://</code> 方式无法读取社区目录和 BIN，这不是固件文件损坏。</p><p>在 RainyMurphy 文件夹双击 <code>Start-RainyMurphy.cmd</code>，会启动本地服务并自动打开浏览器（需要 Node.js 20+）。使用期间保留服务窗口。</p><p>也可在项目目录运行 <code>npm run dev</code>，然后访问 <a href="http://127.0.0.1:4173/" target="_blank" rel="noopener">http://127.0.0.1:4173</a>。</p><p>本机私有主题仍不会上传；在线版正常使用 HTTPS 地址即可。</p></section><details id="catalog-error-details" hidden><summary>查看原因</summary><pre id="catalog-error"></pre></details><div id="catalog-list"></div><section class="theme-confirmation" id="catalog-confirmation" hidden><h3 id="catalog-selected"></h3><details class="flash-disclosure"><summary>文件指纹（SHA-256）</summary><code id="catalog-selected-hash"></code></details><label><input type="checkbox" id="catalog-confirm"><span>我确认这是适用于 Rainy75 V2 IPS 彩屏的固件。我已知晓刷写外部固件可能导致设备无法正常使用或硬件损坏，并自愿承担由此产生的风险及后果。</span></label><button type="button" id="catalog-apply" disabled>使用这个主题</button></section></div></dialog><noscript>此工具需要启用 JavaScript。</noscript></body>
 </html>

@@ -40,7 +40,7 @@
       const staged=await window.RainyFirmwareSource.stageCatalog(entry,{signal:controller.signal});
       if(ticket!==generation){window.RainyFirmwareSource.discardCatalog(staged.token);return;}
       token=staged.token;$('selected').textContent=staged.name+' · '+staged.version;$('selected-hash').textContent=staged.sha256;
-      $('confirmation').hidden=false;$('status').textContent='文件大小与 SHA-256 已核对。确认后仅选用主题，不会自动烧录。';$('confirm').focus();
+      $('confirmation').hidden=false;$('status').textContent='主题文件已核对。确认后去第 3 步开始更新。';$('confirm').focus();
     }catch(error){if(ticket===generation)$('status').textContent=error.name==='AbortError'?'已取消加载':error.message;}
     finally{if(ticket===generation)controller=null;updateActions();}
   }
@@ -89,14 +89,14 @@
       }));
       const entries=results.flatMap(result=>result.status==='fulfilled'?result.value:[]),errors=results.filter(result=>result.status==='rejected').map(result=>result.reason.message);render(entries);loaded=errors.length===0;
       $('error-details').hidden=errors.length===0;$('error').textContent=errors.join('\n');
-      $('status').textContent=entries.length?'预览保持屏幕 320 × 172 比例；点击“播放预览”查看动画。':errors.length?'主题目录读取失败，请展开下方“查看原因”；也可以选择“自定义 BIN”加载本地固件。':'暂未收录主题，可选择“自定义 BIN”加载本地固件。';
+      $('status').textContent=entries.length?'点击“播放预览”查看主题动画。':errors.length?'主题目录读取失败，请展开下方“查看原因”；也可以从电脑选文件。':'暂未收录主题。你也可以从电脑选文件。';
     }finally{loadingList=false;updateActions();}
   }
 
   function open(){if(!window.RainyConnection.isBusy()&&!window.RainyFirmwareSource.isLoading()){window.RainyFirmwareSource.selectTarget('ips');window.RainyFirmwareSource.selectSource('community');}if(!dialog.open)dialog.showModal();return load();}
-  document.getElementById('themes-open').onclick=()=>open();document.getElementById('themes-open-about').onclick=()=>open();
+  document.getElementById('themes-open').onclick=()=>open();
   $('close').onclick=close;$('refresh').onclick=()=>load(true);$('confirm').onchange=updateActions;
-  $('apply').onclick=()=>{try{window.RainyFirmwareSource.applyCatalog(token,$('confirm').checked);token=null;close();window.RainyTabs.select('tab-flash');}catch(error){$('status').textContent=error.message;}};
+  $('apply').onclick=()=>{try{window.RainyFirmwareSource.applyCatalog(token,$('confirm').checked);token=null;close();window.RainyTabs.select('tab-flash');document.getElementById('flash-review-title').focus();}catch(error){$('status').textContent=error.message;}};
   dialog.addEventListener('cancel',event=>{event.preventDefault();close();});dialog.addEventListener('close',cleanup);
   window.RainyCatalog={validate,open};window.RainyConnection.subscribe(updateActions);updateActions();
 })();
